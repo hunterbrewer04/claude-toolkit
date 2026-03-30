@@ -42,6 +42,9 @@ Claude Toolkit is a curated repository of Claude Code extensions organized aroun
 
 2. Create symlinks for skills and agents:
    ```bash
+   # Create directories if they don't exist
+   mkdir -p ~/.claude/skills ~/.claude/agents
+
    # Skills
    for skill in ~/claude-toolkit/skills/*/; do
      name=$(basename "$skill")
@@ -80,6 +83,41 @@ claude-toolkit/
 │   └── ui-designer/
 ├── hooks/
 └── README.md
+```
+
+## Recommended Plugins
+
+These plugins complement the toolkit. Install them on a new machine to replicate the full setup:
+
+```bash
+# Core workflow plugins
+claude plugin add superpowers              # Planning, TDD, debugging, code review workflows
+claude plugin add pr-review-toolkit        # PR review agents (test analyzer, silent-failure hunter, type analyzer)
+claude plugin add commit-commands           # Git commit, push, and PR shortcuts
+claude plugin add code-simplifier          # Post-implementation code cleanup agent
+claude plugin add claude-md-management     # CLAUDE.md auditing and improvement
+
+# Frontend & design
+claude plugin add frontend-design          # High-quality frontend UI generation
+
+# AI & integrations
+claude plugin add vercel                   # Vercel platform skills (deploy, AI SDK, Next.js, etc.)
+claude plugin add firecrawl               # Web scraping and research
+claude plugin add context7                 # Library/framework docs fetching
+claude plugin add stripe                   # Stripe integration best practices
+
+# Productivity
+claude plugin add obsidian                 # Obsidian vault management (notes, canvas, bases)
+claude plugin add learning-output-style    # Educational explanations in responses
+
+# Language tooling
+claude plugin add swift-lsp               # Swift LSP integration
+claude plugin add gopls-lsp               # Go LSP integration
+claude plugin add clangd-lsp              # C/C++ LSP integration
+
+# Other
+claude plugin add greptile                # Codebase search integration
+claude plugin add supabase                # Supabase integration
 ```
 
 ## Prerequisites
