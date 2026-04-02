@@ -12,6 +12,7 @@ Claude Toolkit is a curated repository of Claude Code extensions organized aroun
 
 | Skill | Description | Triggers |
 |-------|-------------|----------|
+| [canvas](./skills/canvas/) | Pull course data from Canvas LMS — assignments, grades, files, announcements, quizzes | `"what's due"`, `"canvas"`, `"my assignments"`, `"my grades"`, `"check my canvas"` |
 | [agent-builder](./skills/agent-builder/) | Create Claude Code sub-agents following Anthropic patterns | `"create an agent"`, `"build a sub-agent"`, `"make a new agent"` |
 | [claude-documentation](./skills/claude-documentation/) | Generate standardized README docs for Claude Code components | `"document this skill"`, `"generate a README"`, `"generate an index README"` |
 | [claude-toolkit](./skills/claude-toolkit/) | Manage this GitHub repository of Claude Code components | `"add this to my toolkit"`, `"push to claude-toolkit"`, `"sync my claude-toolkit"` |
@@ -66,6 +67,7 @@ Claude Toolkit is a curated repository of Claude Code extensions organized aroun
 claude-toolkit/
 ├── skills/
 │   ├── agent-builder/
+│   ├── canvas/
 │   ├── claude-documentation/
 │   ├── claude-toolkit/
 │   ├── hook-builder/
