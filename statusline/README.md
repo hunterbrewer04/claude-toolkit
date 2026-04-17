@@ -5,13 +5,14 @@ An agnoster-inspired status line for Claude Code, rendered on every prompt.
 ## What it shows
 
 ```
- user@host  ||   current-dir  ||   repo:branch  ||   Model Name  ||  ctx:42%  ||  5h:18%
+ user@host  ||   current-dir  ||   repo:branch  ||   Model Name  ||  ⚡high  ||  ctx:42%  ||  5h:18%
 ```
 
 - **user@host** — whoami + short hostname
 - **current-dir** — basename of the working directory
 - **repo:branch** — git repo name + branch (only if in a git repo)
-- **model** — Claude model display name
+- **model** — model display name
+- **⚡effort** — current effort level from `/effort` (reads `~/.claude/settings.json`; `CLAUDE_CODE_EFFORT_LEVEL` env var wins if set). Updates live on next render when you run `/effort <level>`.
 - **ctx** — context window used %
 - **5h** — rate-limit window used % (5-hour session)
 

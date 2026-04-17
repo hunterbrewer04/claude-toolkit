@@ -43,5 +43,17 @@ if [ -n "$model" ]; then
   model_info="${delim}\033[32m ${model} ${RESET}"
 fi
 
-printf "\033[1;34m %s\033[0m@\033[1;32m%s \033[0m${delim}\033[1;33m %s ${RESET}%b%b%b%b" \
-  "$user" "$host" "$short_dir" "$git_info" "$model_info" "$ctx_info" "$rate_info"
+# Effort level (not in stdin JSON — read from settings.json; env var wins if set)
+effort=""
+if [ -n "$CLAUDE_CODE_EFFORT_LEVEL" ]; then
+  effort="$CLAUDE_CODE_EFFORT_LEVEL"
+elif [ -f "$HOME/.claude/settings.json" ]; then
+  effort=$(jq -r '.effortLevel // empty' "$HOME/.claude/settings.json" 2>/dev/null)
+fi
+effort_info=""
+if [ -n "$effort" ]; then
+  effort_info="${delim}\033[91m ⚡${effort} ${RESET}"
+fi
+
+printf "\033[1;34m %s\033[0m@\033[1;32m%s \033[0m${delim}\033[1;33m %s ${RESET}%b%b%b%b%b" \
+  "$user" "$host" "$short_dir" "$git_info" "$model_info" "$effort_info" "$ctx_info" "$rate_info"
