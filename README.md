@@ -34,6 +34,12 @@ Claude Toolkit is a curated repository of Claude Code extensions organized aroun
 | [typescript-pro](./sub-agents/typescript-pro/) | `sonnet` | Advanced TypeScript type system and full-stack type safety |
 | [ui-designer](./sub-agents/ui-designer/) | `sonnet` | Visual design, design systems, and accessibility compliance |
 
+### Configuration
+
+| Component | Description |
+|-----------|-------------|
+| [statusline](./statusline/) | Agnoster-inspired Claude Code status line (user@host, dir, git, model, ctx%, rate-limit%) |
+
 ## Quick Start
 
 1. Clone this repo:
@@ -84,6 +90,7 @@ claude-toolkit/
 │   ├── typescript-pro/
 │   └── ui-designer/
 ├── hooks/
+├── statusline/
 └── README.md
 ```
 
