@@ -19,6 +19,7 @@ Claude Toolkit is a curated repository of Claude Code extensions organized aroun
 | [hook-builder](./skills/hook-builder/) | Build production-ready Claude Code hooks from scratch | `"create a hook"`, `"build a hook"`, `"make a PreToolUse hook"` |
 | [linear-assistant](./skills/linear-assistant/) | Personal project management assistant for Linear | `"create a linear issue"`, `"what's on my plate"`, `"project progress"` |
 | [skill-builder](./skills/skill-builder/) | Meta-skill for creating excellent Claude Code skills | `"create a skill"`, `"build a skill"`, `"improve a skill description"` |
+| [tolaria](./skills/tolaria/) | Work efficiently with Tolaria vaults — direct vs MCP tool selection, multi-vault registration, vault conventions | `"in my Life OS"`, `"in my School OS"`, `"search my vault"`, `"Tolaria MCP not working"`, `"register vault"` |
 
 ### Sub-Agents
 
@@ -78,7 +79,8 @@ claude-toolkit/
 │   ├── claude-toolkit/
 │   ├── hook-builder/
 │   ├── linear-assistant/
-│   └── skill-builder/
+│   ├── skill-builder/
+│   └── tolaria/
 ├── sub-agents/
 │   ├── agent-installer/
 │   ├── code-reviewer/
