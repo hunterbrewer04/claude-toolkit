@@ -1,0 +1,26 @@
+{
+  "skill_name": "sapling-ai-detector",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Can you scan this paragraph and let me know if it sounds AI-generated? Give me a full report.\n\n\"The proliferation of artificial intelligence technologies in contemporary society has fundamentally reshaped numerous industries and altered established paradigms. From healthcare to finance, these advancements offer unprecedented opportunities for innovation and efficiency.\"",
+      "expected_output": "Skill triggers, calls analyze.py with --text containing the passage, returns a markdown report with verdict (likely AI), per-sentence scores, and the standard report sections.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 2,
+      "prompt": "I have a draft essay at ~/Documents/draft.txt — can you grade it for AI content and save the report to ~/Documents/draft-ai-report.md?",
+      "expected_output": "Skill triggers, calls analyze.py with --file and --output flags, confirms the report was written to the requested path, summarizes verdict and flagged sentence count.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 3,
+      "prompt": "Run this through Sapling at the strict threshold (0.9) and tell me the verdict:\n\n\"I made coffee this morning before heading out for a walk around the block. The dog seemed extra excited about it for some reason.\"",
+      "expected_output": "Skill triggers with --threshold 0.9, returns a report classifying the passage as likely human, with no sentences above the strict threshold.",
+      "files": [],
+      "assertions": []
+    }
+  ]
+}
