@@ -1,0 +1,8 @@
+{
+  "name": "meta-builders",
+  "version": "1.0.0",
+  "description": "Authoring + evaluation suite: skill-builder, agent-builder, hook-builder, claude-documentation, and forked skill-creator (with eval/benchmark scripts).",
+  "author": {
+    "name": "Hunter Brewer"
+  }
+}
