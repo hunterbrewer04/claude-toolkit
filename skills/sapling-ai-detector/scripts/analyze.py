@@ -14,6 +14,8 @@ MAX_CHARS = 200_000
 DAILY_FREE_QUOTA = 50_000
 DEFAULT_VERSION = "20251027"
 DEFAULT_THRESHOLD = 0.7
+# Sapling AI Detector entry tier (0–10M chars/month). Update if usage crosses 10M.
+RATE_USD_PER_1K_CHARS = 0.005
 
 
 def call_api(text: str, key: str, version: str) -> dict:
@@ -82,6 +84,7 @@ def build_report(
 
     label, interpretation = verdict(overall)
     quota_pct = (char_count / DAILY_FREE_QUOTA) * 100
+    cost_usd = (char_count / 1000) * RATE_USD_PER_1K_CHARS
     timestamp = datetime.now(timezone.utc).isoformat(timespec="seconds")
 
     ranked = sorted(
@@ -120,7 +123,10 @@ def build_report(
     lines.append(f"| Highest sentence score | `{highest:.2f}` |")
     lines.append(f"| Lowest sentence score | `{lowest:.2f}` |")
     lines.append(
-        f"| Daily quota used (free tier) | ~{quota_pct:.1f}% ({char_count:,} / {DAILY_FREE_QUOTA:,} chars) |\n"
+        f"| Daily quota used (free tier) | ~{quota_pct:.1f}% ({char_count:,} / {DAILY_FREE_QUOTA:,} chars) |"
+    )
+    lines.append(
+        f"| Cost (this scan) | **${cost_usd:.4f}** ({char_count:,} chars × ${RATE_USD_PER_1K_CHARS:.4f}/1K) |\n"
     )
 
     lines.append("## Risk distribution\n")
