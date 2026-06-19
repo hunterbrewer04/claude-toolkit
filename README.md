@@ -13,6 +13,7 @@ Claude Toolkit is a curated repository of Claude Code extensions organized aroun
 | Skill | Description | Triggers |
 |-------|-------------|----------|
 | [agent-builder](./skills/agent-builder/) | Create Claude Code sub-agents following Anthropic patterns | `"create an agent"`, `"build a sub-agent"`, `"make a new agent"` |
+| [apple-calendar-connect](./skills/apple-calendar-connect/) | Connect this machine to a remote Apple Calendar MCP server — prompts for URL + token, runs `claude mcp add`, verifies | `"connect this machine to my apple calendar"`, `"set up the apple-calendar mcp server here"`, `"add my calendar server"` |
 | [claude-documentation](./skills/claude-documentation/) | Generate standardized README docs for Claude Code components | `"document this skill"`, `"generate a README"`, `"generate an index README"` |
 | [claude-toolkit](./skills/claude-toolkit/) | Manage this GitHub repository of Claude Code components | `"add this to my toolkit"`, `"push to claude-toolkit"`, `"sync my claude-toolkit"` |
 | [docx](./skills/docx/) | Create, read, edit, and manipulate Word documents — formatting, tracked changes, images, templates | `"word document"`, `".docx"`, `"create a report/memo/letter"` |
@@ -76,6 +77,7 @@ Claude Toolkit is a curated repository of Claude Code extensions organized aroun
 claude-toolkit/
 ├── skills/
 │   ├── agent-builder/
+│   ├── apple-calendar-connect/
 │   ├── claude-documentation/
 │   ├── claude-toolkit/
 │   ├── docx/
