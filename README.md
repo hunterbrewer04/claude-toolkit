@@ -12,7 +12,6 @@ Claude Toolkit is a curated repository of Claude Code extensions organized aroun
 
 | Skill | Description | Triggers |
 |-------|-------------|----------|
-| [apple-calendar](./skills/apple-calendar/) | Query Apple Calendar via the `ical` EventKit CLI — reads the calendar database directly, ~100ms queries | `"what's on my calendar"`, `"do I have anything today"`, `"check my schedule"`, `"pull from iCal"` |
 | [agent-builder](./skills/agent-builder/) | Create Claude Code sub-agents following Anthropic patterns | `"create an agent"`, `"build a sub-agent"`, `"make a new agent"` |
 | [claude-documentation](./skills/claude-documentation/) | Generate standardized README docs for Claude Code components | `"document this skill"`, `"generate a README"`, `"generate an index README"` |
 | [claude-toolkit](./skills/claude-toolkit/) | Manage this GitHub repository of Claude Code components | `"add this to my toolkit"`, `"push to claude-toolkit"`, `"sync my claude-toolkit"` |
@@ -43,16 +42,6 @@ Claude Toolkit is a curated repository of Claude Code extensions organized aroun
 | Component | Description |
 |-----------|-------------|
 | [statusline](./statusline/) | Agnoster-inspired Claude Code status line (user@host, dir, git, model, ctx%, rate-limit%) |
-
-### Plugins (MCP Servers)
-
-Standalone servers that expose local capabilities to remote Claude Code sessions.
-
-| Plugin | Description | Install |
-|--------|-------------|---------|
-| [apple-calendar](./plugins/apple-calendar/) | MCP server wrapping the `ical` EventKit CLI — exposes Apple Calendar tools over Streamable HTTP, bound to the Mac's Tailscale IP | `bash plugins/apple-calendar/install.sh` |
-
-> **Note:** MCP server plugins require your Mac to be on and the server process running. `install.sh` registers a launchd service that starts automatically on login and restarts on crash.
 
 ## Quick Start
 
@@ -87,7 +76,6 @@ Standalone servers that expose local capabilities to remote Claude Code sessions
 claude-toolkit/
 ├── skills/
 │   ├── agent-builder/
-│   ├── apple-calendar/
 │   ├── claude-documentation/
 │   ├── claude-toolkit/
 │   ├── docx/
@@ -97,8 +85,6 @@ claude-toolkit/
 │   ├── sapling-ai-detector/
 │   ├── skill-builder/
 │   └── tolaria/
-├── plugins/
-│   └── apple-calendar/
 ├── sub-agents/
 │   ├── agent-installer/
 │   ├── code-reviewer/
