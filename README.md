@@ -56,10 +56,20 @@ Claude Toolkit is a curated repository of Claude Code extensions organized aroun
    # Create directories if they don't exist
    mkdir -p ~/.claude/skills ~/.claude/agents
 
-   # Skills
+   # Skills — but never clobber a skill already provided by another repo.
+   # (e.g. `apple-calendar` ships from the apple-calendar-mcp app repo on the Mac,
+   #  where it uses the local `ical` CLI; the toolkit's networked version of the
+   #  same name must not overwrite that symlink. Non-Mac machines have no such
+   #  symlink, so they get the toolkit version.)
    for skill in ~/claude-toolkit/skills/*/; do
+     skill="${skill%/}"
      name=$(basename "$skill")
-     ln -sf "$skill" ~/.claude/skills/"$name"
+     target=~/.claude/skills/"$name"
+     if [ -L "$target" ] && [ "$(readlink "$target")" != "$skill" ]; then
+       echo "skip $name (already provided by $(readlink "$target"))"
+       continue
+     fi
+     ln -sf "$skill" "$target"
    done
 
    # Sub-agents
