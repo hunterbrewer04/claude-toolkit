@@ -17,9 +17,10 @@ the calendar served by your Mac (the `apple-calendar-mcp` HTTP server). This is 
 once it's done, the calendar tools (`get_today`, `get_week`, …) appear automatically and you
 query them by just asking.
 
-This skill does **not** install or run a server. The server runs on the Mac
-(`brew install hunterbrewer04/tap/apple-calendar` + `brew services start`); every other machine
-only needs the URL and a token, which is what this skill wires up.
+This skill does **not** install or run a server. The server runs on the Mac (installed via
+`brew install hunterbrewer04/tap/apple-calendar`, started with `ical serve setup --tailscale`,
+which writes a user LaunchAgent that reads its token from `~/.config/apple-calendar/token`); every
+other machine only needs the URL and a token, which is what this skill wires up.
 
 ## When to use it
 
@@ -33,16 +34,16 @@ Do **not** use it to look up calendar events — that's a different skill / the 
 - This machine must be able to reach the Mac over the **same private network** (Tailscale tailnet
   or other VPN). Quick sanity check: `tailscale status` (or `ping <mac-ip>`).
 - You need two values from the Mac host:
-  - **Server URL** — usually `http://<mac-tailnet-ip>:3456/mcp`
-  - **Bearer token** — on the Mac, run `launchctl getenv CALENDAR_MCP_TOKEN`
+  - **Server URL** — usually `http://<mac-tailnet-ip>:3456/mcp` (the Mac prints it via `ical serve status`)
+  - **Bearer token** — on the Mac, run `ical serve token` (copy with `ical serve token | pbcopy`)
 
 ## Process
 
 ### 1. Gather inputs
 
-Ask the user for the **server URL** and the **bearer token**. If they don't have the token, point
-them at `launchctl getenv CALENDAR_MCP_TOKEN` on the Mac host. Treat the token like a password —
-don't echo it back in plaintext in your summaries.
+Ask the user for the **server URL** and the **bearer token**. If they don't have them, point them
+at `ical serve status` (URL) and `ical serve token` (token) on the Mac host. Treat the token like a
+password — don't echo it back in plaintext in your summaries.
 
 ### 2. Register the server (idempotent)
 
@@ -52,8 +53,8 @@ machine):
 
 ```bash
 claude mcp remove apple-calendar --scope user 2>/dev/null || true
-claude mcp add --transport http --scope user apple-calendar "<URL>" \
-  --header "Authorization: Bearer <TOKEN>"
+claude mcp add --transport http --scope user apple-calendar '<URL>' \
+  --header 'Authorization: Bearer <TOKEN>'
 ```
 
 **Fallback** — if the CLI flags differ, hand-edit the user MCP config to add:
@@ -103,5 +104,11 @@ needed for them to load). Suggest a test like "what's on my calendar".
 
 - **Scope:** `--scope user` = available in every project on this machine. Use `--scope project` to
   limit it to the current project only.
-- **Security:** the token grants read access to the whole calendar — treat it like a password. To
-  rotate it, just re-run this skill with the new token (the remove-then-add makes it idempotent).
+- **Security:** the token grants full **read + write** access to the whole calendar (the server also
+  exposes create/update/delete tools) — treat it like a password. To rotate it, run `ical serve setup
+  --force` on the Mac to mint a new token, then re-run this skill with it (remove-then-add is idempotent).
+- **Not Claude-specific:** the server is a standard MCP-over-HTTP endpoint with bearer auth. Any
+  MCP-capable client — Claude Desktop, Cursor, Cline, or a custom agent built on an MCP SDK — can use it
+  with the same URL + `Authorization: Bearer <token>` header (the `mcpServers` JSON block above is the
+  portable form). This skill only automates the Claude Code registration; the server itself isn't tied
+  to Claude Code.
