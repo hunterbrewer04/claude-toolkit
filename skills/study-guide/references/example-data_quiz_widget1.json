@@ -1,0 +1,42 @@
+{
+  "lec": "widget1",
+  "quiz": [
+    {
+      "q": "What best defines a widget?",
+      "options": [
+        "A network protocol for streaming video",
+        "A self-contained unit with a defined interface",
+        "A type of database index",
+        "A CPU scheduling algorithm"
+      ],
+      "answer": 1,
+      "explain": "A widget is a self-contained unit exposing a defined `interface`, separating behavior from data."
+    },
+    {
+      "q": "In the worked example, which member is the interface?",
+      "options": [
+        "`id`",
+        "`render`",
+        "both",
+        "neither"
+      ],
+      "answer": 1,
+      "explain": "`render` is the behavior the widget exposes, so it is the interface; `id` is state."
+    },
+    {
+      "q": "Why separate interface from data?",
+      "options": [
+        "To make the file larger",
+        "So behavior can change independently of stored state",
+        "To disable the widget",
+        "It is required by the linker"
+      ],
+      "answer": 1,
+      "explain": "Separating the interface from the data lets each evolve independently, the core design idea."
+    }
+  ],
+  "flashcards": [
+    {"front": "Widget", "back": "A self-contained unit with a defined interface."},
+    {"front": "Interface vs data", "back": "Interface = behavior exposed (`render`); data = internal state (`id`)."}
+  ]
+}

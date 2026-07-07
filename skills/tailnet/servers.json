@@ -1,0 +1,24 @@
+{
+  "brewserver": {
+    "ip": "100.77.32.30",
+    "ssh_alias": "brewserver",
+    "user": "hunterbrewer04",
+    "default_dests": {
+      "school": "/mnt/School",
+      "code": "/mnt/code-projects",
+      "brewmint": "/mnt/BrewMint"
+    },
+    "notes": "GTX 1050 Ti, CUDA runs"
+  },
+  "hp-server": {
+    "ip": "100.110.7.79",
+    "ssh_alias": "hp-server",
+    "user": "hunterbrewer04"
+  },
+  "micro-server": {
+    "ip": "100.108.167.49",
+    "ssh_alias": "micro-server",
+    "user": "hunterbrewer04",
+    "notes": "Hermes agent, AI workloads"
+  }
+}

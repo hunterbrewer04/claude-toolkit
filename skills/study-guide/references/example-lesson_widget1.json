@@ -1,0 +1,30 @@
+{
+  "view": "widget1",
+  "subtitle": "what a widget is, its parts, and its interface",
+  "preamble": "This walkthrough replaces the Module 9-1 slides. It answers one question: *what is a widget, and why should you care?* Master the definition here and the rest of the module is easy.",
+  "sections": [
+    {
+      "title": "Introduction — where this lecture fits",
+      "kind": "intro",
+      "body": "This is the **foundation lecture**. Everything later assumes you know what a widget is.\n\nRead it once slowly, then hit the Quick check."
+    },
+    {
+      "title": "1. What Is a Widget?",
+      "body": "A **widget** is a self-contained unit with a defined interface. Think of it like a `struct` with behavior.\n\n### Worked example\nHere is a minimal widget in pseudo-C:\n\n```cpp\nstruct Widget {\n  int id;\n  void render();  // the interface\n};\n```\n\nThe key idea: the *interface* (`render`) is separate from the *data* (`id`).\n\n| Part | Role |\n|---|---|\n| id | identity |\n| render | behavior |\n\n### Practice problem\n**Problem:** Name the two parts of the widget above.\n\n**Answer:** `id` (data) and `render` (interface/behavior).",
+      "quickcheck": [
+        {"q": "What is a widget?", "a": "A self-contained unit with a defined `interface`."},
+        {"q": "What separates a widget's interface from its data?", "a": "The interface is the **behavior** (`render`); the data is the state (`id`)."}
+      ]
+    },
+    {
+      "title": "🎯 Most exam-likely points",
+      "kind": "exam",
+      "body": "- A widget = **self-contained unit + defined interface**.\n- Interface (behavior) is separate from data (state)."
+    },
+    {
+      "title": "🔑 Key terms glossary",
+      "kind": "gloss",
+      "body": "**Widget** — a self-contained unit with a defined interface.\n\n**Interface** — the behavior a widget exposes."
+    }
+  ]
+}

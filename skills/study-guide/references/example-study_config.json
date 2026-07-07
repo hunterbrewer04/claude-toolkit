@@ -1,0 +1,41 @@
+{
+  "course": "CSCI-TEST · Synthetic Course",
+  "module_name": "Module 9",
+  "module_title": "Widget Fundamentals",
+  "exam": "Exam 7",
+  "subject": "Widgets",
+  "brand": "WIDGET·LAB",
+  "storage_key": "m9widget",
+  "lecture_word": "widget",
+  "overview_emoji": "⬡",
+  "output_dir": ".",
+  "output_basename": "Module9",
+  "seed": 4610,
+  "walkthrough_header": "> **Course:** CSCI-TEST Synthetic Course · **Module 9 (Widgets), Lecture {num}**\n> **Instructor:** Test Harness",
+  "overview": {
+    "tagline": "Interactive Exam 7 study guide · 1 lecture · read this instead of the slides",
+    "big_picture": "> **The big picture:** A widget is a thing. This module explains what a thing is and why the thing matters.",
+    "story_arc": "1. **Widget 1 — what a widget is.** Establishes the vocabulary the exam assumes.",
+    "cross_cutting": "- **What a widget is** — the single most important framing.",
+    "checklist": [
+      "Define a widget in your own words.",
+      "Do every Quick check without looking."
+    ],
+    "footer": "*Synthetic fixture for build verification.*"
+  },
+  "lectures": [
+    {
+      "view": "widget1",
+      "num": "1",
+      "emoji": "🧩",
+      "short": "Widget 1",
+      "label": "What Is a Widget",
+      "accent": "#5b9cff",
+      "lesson": "example-lesson_widget1.json",
+      "quiz": "example-data_quiz_widget1.json",
+      "walkthrough": "Module9-1_Widget1_Walkthrough.md",
+      "about": "**What a widget is** — definition, parts, and why it matters",
+      "takeaway": "A widget is a self-contained thing with a defined interface."
+    }
+  ]
+}

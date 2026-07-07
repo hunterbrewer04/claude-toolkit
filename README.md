@@ -13,15 +13,26 @@ Claude Toolkit is a curated repository of Claude Code extensions organized aroun
 | Skill | Description | Triggers |
 |-------|-------------|----------|
 | [agent-builder](./skills/agent-builder/) | Create Claude Code sub-agents following Anthropic patterns | `"create an agent"`, `"build a sub-agent"`, `"make a new agent"` |
-| [apple-calendar-connect](./skills/apple-calendar-connect/) | Connect this machine to a remote Apple Calendar MCP server — prompts for URL + token, runs `claude mcp add`, verifies | `"connect this machine to my apple calendar"`, `"set up the apple-calendar mcp server here"`, `"add my calendar server"` |
+| [apple-calendar](./skills/apple-calendar/) | Apple Calendar via the local `ical` CLI (EventKit) | `"what's on my calendar"`, `"pull from iCal"`, `"schedule ..."` |
+| [branch-pr](./skills/branch-pr/) | Branch → implement → review → PR workflow ("ship") + Copilot review-comment triage | `"ship this"`, `"triage pr 44"`, `"look at the copilot comments"` |
+| [canvas-fetch](./skills/canvas-fetch/) | Pull Canvas assignments into local course folders via composio, plus a cross-course due-date sweep | `"grab assignment 15 for 4610"`, `"whats due tonight"`, `"canvas sweep"` |
 | [claude-documentation](./skills/claude-documentation/) | Generate standardized README docs for Claude Code components | `"document this skill"`, `"generate a README"`, `"generate an index README"` |
 | [claude-toolkit](./skills/claude-toolkit/) | Manage this GitHub repository of Claude Code components | `"add this to my toolkit"`, `"push to claude-toolkit"`, `"sync my claude-toolkit"` |
+| [client-deploy](./skills/client-deploy/) | Deploy a BrewMint client site to Cloudflare Pages + Worker, then run the post-deploy checklist | `"deploy the serenity site"`, `"push the client site live"` |
+| [client-onboard](./skills/client-onboard/) | New BrewMint client end to end: scrape → intake docs → scaffolded static repo → portal registration | `"onboard this new client"`, `"set up a new client"` |
+| [course-setup](./skills/course-setup/) | Scaffold new course folders and clean Canvas file exports; owns the school.json registry | `"set up my new course"`, `"organize the course files export"` |
 | [docx](./skills/docx/) | Create, read, edit, and manipulate Word documents — formatting, tracked changes, images, templates | `"word document"`, `".docx"`, `"create a report/memo/letter"` |
+| [grade-calc](./skills/grade-calc/) | Exact grade math from syllabus weights: current grade, what-ifs, and letter-grade targets | `"what do i need on the final"`, `"whats my grade in 4610"` |
 | [hook-builder](./skills/hook-builder/) | Build production-ready Claude Code hooks from scratch | `"create a hook"`, `"build a hook"`, `"make a PreToolUse hook"` |
 | [linear-assistant](./skills/linear-assistant/) | Personal project management assistant for Linear | `"create a linear issue"`, `"what's on my plate"`, `"project progress"` |
+| [notebooklm-course-sync](./skills/notebooklm-course-sync/) | Diff local course files against the course's NotebookLM notebook and upload what's missing | `"sync my 4610 files to notebooklm"`, `"whats missing from the notebook"` |
 | [plan-agent-team](./skills/plan-agent-team/) | Generate executable Claude Code agent-team plans — composition, spawn prompts, file ownership, testing playbook | `"/plan-agent-team"`, `"plan an agent-team for X"`, `"make a team plan"` |
+| [remotion-best-practices](./skills/remotion-best-practices/) | Best practices for Remotion video creation in React | Remotion project work |
+| [rubric-check](./skills/rubric-check/) | Fresh-context subagent grades draft work strictly against the assignment spec before submission | `"check my submission before i turn it in"`, `"what files do i need to turn in"` |
 | [sapling-ai-detector](./skills/sapling-ai-detector/) | Scan text for AI-generated content via the Sapling API with per-sentence reports | `"check this for AI"`, `"is this AI-generated"`, `"run this through Sapling"` |
 | [skill-builder](./skills/skill-builder/) | Meta-skill for creating excellent Claude Code skills | `"create a skill"`, `"build a skill"`, `"improve a skill description"` |
+| [study-guide](./skills/study-guide/) | Lecture PDFs → self-contained interactive HTML study package (lessons, quiz, flashcards) via a fixed template | `"make me a study guide for exam 4"`, `"make it like the one for exam 3"` |
+| [tailnet](./skills/tailnet/) | Tailnet server registry + transfer/serve/stop/send verbs (brewserver, hp-server, micro-server, Taildrop) | `"transfer this to my brewserver"`, `"serve this on my tailscale ip"` |
 | [tolaria](./skills/tolaria/) | Work efficiently with Tolaria vaults — direct vs MCP tool selection, multi-vault file workflows, vault conventions | `"in my Life OS"`, `"in my School OS"`, `"search my vault"`, `"refresh vault"` |
 
 ### Sub-Agents

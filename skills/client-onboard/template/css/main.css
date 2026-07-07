@@ -1,0 +1,204 @@
+/* ============================================================
+   {{CLIENT_NAME}} -- Design System
+   Layered: tokens -> base -> components -> sections -> utilities.
+   Keep it that order as the file grows. See DESIGN_SPEC.md for the
+   rationale behind every token and rule here -- this file should never
+   drift from what that doc says without a PROJECT_NOTES.md entry.
+   ============================================================ */
+
+/* ---------- Tokens ---------- */
+/* Neutral placeholder palette. Replace with the client's real brand
+   colors once DESIGN_SPEC.md has them -- do not build pages around these
+   values, they only exist so nothing looks unstyled in the meantime. */
+:root {
+  --ink: #171717;
+  --ink-soft: #525252;
+  --bg: #ffffff;
+  --bg-alt: #f5f5f5;
+  --accent: #111111;
+  --on-accent: #ffffff;
+  --border: #e5e5e5;
+
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --step--1: clamp(0.83rem, 0.8rem + 0.15vw, 0.9rem);
+  --step-0: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+  --step-1: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
+  --step-2: clamp(1.75rem, 1.5rem + 1vw, 2.5rem);
+  --step-3: clamp(2.25rem, 1.9rem + 1.5vw, 3.5rem);
+
+  --space-section: clamp(3rem, 8vw, 6rem);
+  --content-max: 72rem;
+}
+
+/* ---------- Base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: auto; }
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--step-0);
+  line-height: 1.6;
+  color: var(--ink);
+  background: var(--bg);
+}
+img { max-width: 100%; display: block; }
+h1, h2, h3 { line-height: 1.15; margin: 0 0 0.5em; }
+h1 { font-size: var(--step-3); }
+h2 { font-size: var(--step-2); }
+h3 { font-size: var(--step-1); }
+a { color: inherit; }
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  background: var(--accent);
+  color: var(--on-accent);
+  padding: 0.75em 1em;
+  z-index: 100;
+}
+.skip-link:focus { left: 0; }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ---------- Components ---------- */
+.btn {
+  display: inline-block;
+  padding: 0.75em 1.5em;
+  border-radius: 2px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 200ms ease, transform 200ms ease;
+}
+.btn--primary {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.btn--primary:hover { transform: translateY(-1px); }
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+.site-header__inner {
+  max-width: var(--content-max);
+  margin-inline: auto;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.site-header__logo { font-weight: 700; text-decoration: none; }
+
+.site-nav__menu {
+  list-style: none;
+  display: flex;
+  gap: 1.5rem;
+  margin: 0;
+  padding: 0;
+}
+.site-nav__menu a { text-decoration: none; }
+
+.site-nav__toggle {
+  display: none;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid var(--border);
+  background: transparent;
+  border-radius: 4px;
+}
+
+@media (max-width: 47.99em) {
+  .site-nav__toggle { display: inline-block; }
+  .site-nav__menu {
+    position: fixed;
+    inset: 0 0 0 auto;
+    flex-direction: column;
+    background: var(--bg);
+    padding: 5rem 2rem 2rem;
+    transform: translateX(100%);
+    transition: transform 250ms ease;
+  }
+  .site-nav__menu.is-open { transform: translateX(0); }
+}
+
+/* ---------- Image placeholder slots ----------
+   Use this component for any photo that doesn't exist yet. Layout the
+   surrounding markup so a real <img src> can drop in later with zero
+   structural changes -- see IMAGE_MANIFEST.md for the id -> file mapping
+   once real photos exist. Never fill an empty slot with stock or
+   AI-generated imagery; leave it as a placeholder and flag it instead. */
+.img-slot {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--bg-alt), var(--border));
+  aspect-ratio: 4 / 3;
+}
+.img-slot::after {
+  content: attr(data-asset);
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--step--1);
+  color: var(--ink-soft);
+  text-align: center;
+  padding: 1em;
+}
+.img-slot__inner { width: 100%; height: 100%; object-fit: cover; }
+
+/* ---------- Sections ---------- */
+.hero {
+  padding: var(--space-section) 1.5rem;
+  max-width: var(--content-max);
+  margin-inline: auto;
+}
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: var(--step--1);
+  color: var(--ink-soft);
+}
+.hero__subhead { color: var(--ink-soft); max-width: 60ch; }
+
+.site-footer {
+  background: var(--ink);
+  color: var(--bg);
+  padding: 2.5rem 1.5rem;
+}
+.site-footer__inner { max-width: var(--content-max); margin-inline: auto; }
+.site-footer a { color: inherit; }
+
+/* ---------- Scroll reveal ----------
+   Gated behind html.js (added inline in <head>, before first paint) so a
+   no-JS visitor never gets a permanently blank page. The revealed rule
+   must carry the same html.js prefix as the hiding rule or it loses the
+   specificity race and content never reveals with JS on -- keep both
+   rules at the same specificity level if you touch this. */
+html.js [data-reveal] { opacity: 0; transform: translateY(24px); transition: opacity 700ms cubic-bezier(0.22, 1, 0.36, 1), transform 700ms cubic-bezier(0.22, 1, 0.36, 1); }
+html.js [data-reveal].is-revealed { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  html.js [data-reveal] { opacity: 1 !important; transform: none !important; transition: none !important; }
+}
+
+/* ---------- Utilities ---------- */
+.container { max-width: var(--content-max); margin-inline: auto; padding-inline: 1.5rem; }
