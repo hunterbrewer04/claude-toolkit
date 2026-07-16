@@ -43,7 +43,7 @@ description: Use when the user asks to "document this skill", "document this hoo
 
 - Documenting general application code (use standard doc tools)
 - Writing CLAUDE.md project memory files (use `claude-md-management` skills)
-- Creating the component itself (use `skill-builder`, `hook-builder`, or `agent-builder`)
+- Creating the component itself (use `skill-builder`)
 
 ## Directory Structure
 
@@ -79,16 +79,16 @@ No configuration is needed. The skill uses standard Claude Code skill loading vi
 
 ### Documenting a Skill
 
-Trigger: "Document the hook-builder skill"
+Trigger: "Document the grade-calc skill"
 
 The skill will:
 
-1. Detect `SKILL.md` in the hook-builder directory, identifying it as a skill
+1. Detect `SKILL.md` in the grade-calc directory, identifying it as a skill
 2. Parse YAML frontmatter for `name` and `description`
 3. Scan the body for workflow steps, references, and resource files
 4. Load `references/skill-template.md` for the output format
 5. Generate a README.md with sections for overview, trigger phrases, how it works, directory structure, setup, examples, and related components
-6. Write the file to `hook-builder/README.md`
+6. Write the file to `grade-calc/README.md`
 
 ### Index/Catalog Mode
 
@@ -112,6 +112,4 @@ The skill will:
 ## Related Components
 
 - [skill-builder](../../skills/skill-builder/) — For creating new skills (use before documenting)
-- [hook-builder](../../skills/hook-builder/) — For creating new hooks (use before documenting)
-- [agent-builder](../../skills/agent-builder/) — For creating new sub-agents (use before documenting)
 - [claude-toolkit](../../skills/claude-toolkit/) — For publishing documented components to a toolkit repository
