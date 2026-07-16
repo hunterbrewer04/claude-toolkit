@@ -139,4 +139,3 @@ This skill requires no additional configuration. Default author for tracked chan
 ## Related Components
 
 - [claude-documentation](../claude-documentation/) — Generates READMEs for skills like this one
-- [tolaria](../tolaria/) — For working with Markdown notes (use that instead of docx when the deliverable is a note, not a Word file)

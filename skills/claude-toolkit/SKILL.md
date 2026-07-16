@@ -22,7 +22,7 @@ This skill orchestrates the full lifecycle of adding Claude Code components to a
 ## When NOT to Use
 
 - Creating a new GitHub repository (this skill uses an existing repo)
-- Building the component itself (use `skill-builder`, `hook-builder`, or `agent-builder`)
+- Building the component itself (use `skill-builder`)
 - Writing documentation standalone (use `claude-documentation` directly)
 
 ## Core Process

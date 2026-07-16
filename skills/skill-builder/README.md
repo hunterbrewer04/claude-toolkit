@@ -43,8 +43,7 @@ description: This skill should be used when the user asks to "create a skill", "
 
 ## When NOT to Use
 
-- Creating sub-agents (use `agent-builder`)
-- Creating hooks (use `hook-builder`)
+- Creating sub-agents or hooks (that is separate authoring work, not a skill)
 - Documenting an existing skill (use `claude-documentation`)
 - Managing a toolkit repository (use `claude-toolkit`)
 
@@ -142,7 +141,5 @@ The skill will walk through:
 
 ## Related Components
 
-- [agent-builder](../../skills/agent-builder/) — For creating sub-agents instead of skills
-- [hook-builder](../../skills/hook-builder/) — For creating hooks instead of skills
 - [claude-documentation](../../skills/claude-documentation/) — For generating README documentation for skills
 - [claude-toolkit](../../skills/claude-toolkit/) — For publishing skills to a toolkit repository

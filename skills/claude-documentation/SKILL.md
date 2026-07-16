@@ -22,7 +22,7 @@ This skill produces consistent markdown READMEs adapted by component type. Each 
 
 - Documenting general application code (use standard doc tools)
 - Writing CLAUDE.md project memory files (use `claude-md-management` skills)
-- Creating the component itself (use `skill-builder`, `hook-builder`, or `agent-builder`)
+- Creating the component itself (use `skill-builder`)
 
 ## Core Process
 

@@ -181,8 +181,7 @@ This skill should be used when the user asks to "create a skill", "write a skill
 
 ## When NOT to Use
 
-- Writing hooks — use `hook-builder` instead
-- Writing sub-agents — use `agent-builder` instead
+- Writing hooks or sub-agents — that is separate authoring work
 - Editing CLAUDE.md files — use `claude-md-management` skills instead
 
 ## Directory Structure
@@ -226,7 +225,6 @@ This skill requires no additional configuration.
 ## Dependencies
 
 - No external dependencies
-- References `hook-builder` and `agent-builder` skills by name (for "when NOT to use" guidance)
 
 ## Examples
 
@@ -244,6 +242,6 @@ This skill requires no additional configuration.
 
 ## Related Components
 
-- [hook-builder](../hook-builder/) — Creates hooks (complementary to skill-builder)
-- [agent-builder](../agent-builder/) — Creates sub-agents (complementary to skill-builder)
+- [claude-documentation](../claude-documentation/) — Documents skills after you build them
+- [claude-toolkit](../claude-toolkit/) — Publishes skills to a toolkit repository
 ```

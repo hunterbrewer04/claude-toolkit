@@ -41,7 +41,7 @@ description: Use when the user asks to "add this to my toolkit", "push to claude
 ## When NOT to Use
 
 - Creating a new GitHub repository (this skill uses an existing repo)
-- Building the component itself (use `skill-builder`, `hook-builder`, or `agent-builder`)
+- Building the component itself (use `skill-builder`)
 - Writing documentation standalone (use `claude-documentation` directly)
 
 ## Directory Structure
@@ -84,16 +84,16 @@ The skill reads and writes this configuration automatically. If the path is not 
 
 ### Adding a Skill to the Toolkit
 
-Trigger: "Add the hook-builder skill to my toolkit"
+Trigger: "Add the grade-calc skill to my toolkit"
 
 The skill will:
 
 1. Resolve the toolkit repo path from `~/.claude/CLAUDE.md`
 2. Detect `SKILL.md` in the source, identifying it as a skill
-3. Run `add-component.sh skill /path/to/hook-builder /path/to/toolkit-repo`
+3. Run `add-component.sh skill /path/to/grade-calc /path/to/toolkit-repo`
 4. Invoke `claude-documentation` to generate a README in the toolkit copy
 5. Regenerate the top-level index README
-6. Commit with message "Add skill: hook-builder" and push (after confirmation)
+6. Commit with message "Add skill: grade-calc" and push (after confirmation)
 
 ### Setting Up on a New Machine
 
@@ -121,5 +121,3 @@ The skill will:
 
 - [claude-documentation](../../skills/claude-documentation/) — Invoked to generate component READMEs and index catalogs
 - [skill-builder](../../skills/skill-builder/) — For creating skills before adding them to the toolkit
-- [hook-builder](../../skills/hook-builder/) — For creating hooks before adding them to the toolkit
-- [agent-builder](../../skills/agent-builder/) — For creating sub-agents before adding them to the toolkit

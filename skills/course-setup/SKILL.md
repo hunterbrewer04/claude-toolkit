@@ -1,6 +1,6 @@
 ---
 name: course-setup
-description: Sets up new course folders and cleans Canvas file exports, for when Hunter starts a new class or needs a dump organized. Covers scaffolding a brand-new course folder ("set up my new course", "add 4610 to my school stuff", "new class this semester", "set up CORE 3500"), and cleaning a dumped course_files_export/ directory against the rest of the course ("organize the course files export", "clean up this export dump", "sort these files into modules", "dedupe the files Canvas gave me"). Owns and documents the school.json registry (course key, path, canvas_id, notebook, grades_file, semester) that canvas-fetch and other skills read from.
+description: Sets up new course folders and cleans Canvas file exports, for when Hunter starts a new class or needs a dump organized. Covers scaffolding a brand-new course folder ("set up my new course", "add 4610 to my school stuff", "new class this semester", "set up CORE 3500"), and cleaning a dumped course_files_export/ directory against the rest of the course ("organize the course files export", "clean up this export dump", "sort these files into modules", "dedupe the files Canvas gave me"). Owns and documents the school.json registry (course key, path, canvas_id, notebook, grades_file, semester) that other course skills read from.
 ---
 
 # course-setup
@@ -16,7 +16,7 @@ Two verbs, both scoped to one course folder at a time:
   course folder, then filing what's actually new.
 
 course-setup **owns** `school.json` — it's the only skill that writes to it.
-canvas-fetch and others only read it.
+Other course skills only read it.
 
 ## Prerequisites
 
