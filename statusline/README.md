@@ -5,7 +5,7 @@ An agnoster-inspired status line for Claude Code, rendered on every prompt. Thre
 ## What it shows
 
 ```
- hunterbrewer@macbook-air  ||   ~/claude-toolkit  ||   claude-toolkit:main *3 ↑1
+ user@host  ||   ~/claude-toolkit  ||   claude-toolkit:main *3 ↑1
 
  Opus 5  ||  ⚡high  ||  learning  ||  v2.1.234  ||  +412/-88  ||  $1.23  ||  41m
 

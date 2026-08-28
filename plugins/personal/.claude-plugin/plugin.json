@@ -1,0 +1,8 @@
+{
+  "name": "personal",
+  "version": "1.0.0",
+  "description": "Personal-life tooling. Currently Apple Calendar read and write via EventKit.",
+  "author": {
+    "name": "Hunter Brewer"
+  }
+}

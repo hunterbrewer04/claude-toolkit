@@ -1,0 +1,13 @@
+{
+  "example-server": {
+    "ip": "100.x.x.x",
+    "ssh_alias": "example-server",
+    "user": "your-user",
+    "default_dests": {
+      "school": "/mnt/School",
+      "code": "/mnt/code-projects",
+      "work": "/mnt/Work"
+    },
+    "notes": "free-text description of what this box is for"
+  }
+}

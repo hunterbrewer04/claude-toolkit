@@ -1,136 +1,102 @@
-# Claude Toolkit
+# BrewKit
 
-> My personal Claude Code setup: the skills and sub-agents I use daily across coursework, client web projects, and homelab work.
+> My personal Claude Code setup, packaged as a plugin marketplace so I can install exactly the pieces a given machine needs.
 
-This is a public snapshot of how I extend [Claude Code](https://docs.claude.com/en/docs/claude-code). It holds **17 skills**, **8 sub-agents**, and a custom status line. Most pieces are wired to my machine's paths and conventions, so treat them as reference patterns to borrow from rather than drop-in installs.
+This is a public snapshot of how I extend [Claude Code](https://docs.claude.com/en/docs/claude-code).
+It ships **6 plugins** covering 20 skills, 1 sub-agent, 4 hooks, and a custom status line.
 
-## Skills
-
-A skill is a folder with a `SKILL.md` that Claude loads on demand when your request matches its triggers.
-
-### Authoring and this repo
-
-| Skill | What it does |
-|-------|--------------|
-| [skill-builder](./skills/skill-builder/) | Build a new skill through a structured, validated 7-step process |
-| [claude-documentation](./skills/claude-documentation/) | Generate consistent README docs for skills and sub-agents |
-| [claude-toolkit](./skills/claude-toolkit/) | Add, sync, and set up this repo's components across machines |
-
-### Development and web
-
-| Skill | What it does |
-|-------|--------------|
-| [branch-pr](./skills/branch-pr/) | Branch, implement, code-review, and open a PR in one pass; also triages PR review comments |
-| [client-onboard](./skills/client-onboard/) | Stand up a new static-site client project end to end, from site scrape to scaffolded repo |
-| [client-deploy](./skills/client-deploy/) | Deploy a static client site to Cloudflare Pages and run a live post-deploy check |
-
-### School
-
-| Skill | What it does |
-|-------|--------------|
-| [course-setup](./skills/course-setup/) | Scaffold a new course folder and clean Canvas file dumps; owns the school.json registry |
-| [grade-calc](./skills/grade-calc/) | Exact grade math from syllabus weights: current grade, what-ifs, and target scores |
-| [rubric-check](./skills/rubric-check/) | Grade a draft against its assignment spec before you submit |
-| [study-guide](./skills/study-guide/) | Turn lecture PDFs into a self-contained interactive HTML study package |
-| [notebooklm-course-sync](./skills/notebooklm-course-sync/) | Keep a course's NotebookLM notebook in sync with local files |
-| [sapling-ai-detector](./skills/sapling-ai-detector/) | Scan text for AI-generated content with a per-sentence report |
-
-### Everyday and system
-
-| Skill | What it does |
-|-------|--------------|
-| [apple-calendar](./skills/apple-calendar/) | Read and edit Apple Calendar through the local `ical` CLI |
-| [linear-assistant](./skills/linear-assistant/) | Manage Linear issues, projects, and cycles |
-| [tailnet](./skills/tailnet/) | Move files to and from home tailnet servers, or serve a file to another device |
-| [docx](./skills/docx/) | Create, read, and edit Word documents |
-| [remotion-best-practices](./skills/remotion-best-practices/) | Guidance for building Remotion videos in React |
-
-## Sub-Agents
-
-A sub-agent is a specialized assistant Claude Code can hand focused work to, each with its own model and tools.
-
-| Agent | Model | What it does |
-|-------|-------|--------------|
-| [code-reviewer](./sub-agents/code-reviewer/) | `opus` | Reviews changes for quality, security, and best practices |
-| [frontend-developer](./sub-agents/frontend-developer/) | `sonnet` | Multi-framework frontend work across React, Vue, and Angular |
-| [fullstack-developer](./sub-agents/fullstack-developer/) | `sonnet` | End-to-end feature delivery from database to UI |
-| [performance-engineer](./sub-agents/performance-engineer/) | `sonnet` | Profiling, bottleneck hunting, and system optimization |
-| [react-specialist](./sub-agents/react-specialist/) | `sonnet` | Advanced React patterns, performance, and state management |
-| [refactoring-specialist](./sub-agents/refactoring-specialist/) | `sonnet` | Safe refactoring that preserves behavior |
-| [typescript-pro](./sub-agents/typescript-pro/) | `sonnet` | Advanced TypeScript types and full-stack type safety |
-| [ui-designer](./sub-agents/ui-designer/) | `sonnet` | Visual design, design systems, and accessibility |
-
-## Status Line
-
-[statusline/](./statusline/) is an Agnoster-inspired Claude Code status line showing user@host, directory, git branch, model, context use, and rate-limit percentage.
+Most pieces follow my own paths and conventions, so treat them as reference patterns
+to borrow from rather than drop-in installs.
 
 ## Install
 
-```bash
-# 1. Clone
-git clone https://github.com/hunterbrewer04/claude-toolkit.git ~/claude-toolkit
-
-# 2. Symlink skills and sub-agents into Claude Code
-mkdir -p ~/.claude/skills ~/.claude/agents
-
-for skill in ~/claude-toolkit/skills/*/; do
-  ln -sfn "${skill%/}" ~/.claude/skills/"$(basename "$skill")"
-done
-
-for agent in ~/claude-toolkit/sub-agents/*/; do
-  name=$(basename "$agent")
-  ln -sf "$agent$name.md" ~/.claude/agents/"$name.md"
-done
+```
+/plugin marketplace add hunterbrewer04/claude-toolkit
+/plugin install school@brewkit
 ```
 
-Restart Claude Code, then try a trigger to confirm it loaded, for example "create a skill" (skill-builder) or "what's on my plate" (linear-assistant).
+Install only the plugins that machine actually needs. Nothing here assumes the others
+are present.
 
-## Prerequisites
+## Plugins
 
-- Claude Code CLI
-- Bash, for the skill and status-line scripts
-- A few skills need extra tools: Linear MCP for linear-assistant, the `ical` CLI for apple-calendar, and `composio` for course-setup's Canvas lookups
+### school
 
-## How it fits together
+Coursework tooling.
 
-The pieces compose. A few examples:
+| Skill | What it does |
+|---|---|
+| [course-setup](./plugins/school/skills/course-setup/) | Scaffold a new course folder and clean Canvas file dumps; owns the `school.json` registry |
+| [grade-calc](./plugins/school/skills/grade-calc/) | Exact grade math from syllabus weights: current grade, what-ifs, target scores |
+| [rubric-check](./plugins/school/skills/rubric-check/) | Grade a draft against its assignment spec before submitting |
+| [study-guide](./plugins/school/skills/study-guide/) | Turn lecture PDFs into a self-contained interactive HTML study package |
+| [notebooklm-course-sync](./plugins/school/skills/notebooklm-course-sync/) | Keep a course's NotebookLM notebook in sync with local files |
+| [sapling-ai-detector](./plugins/school/skills/sapling-ai-detector/) | Scan text for AI-generated content with a per-sentence report |
 
-- Build a skill with **skill-builder**, document it with **claude-documentation**, then publish it with **claude-toolkit**.
-- Plan work in **linear-assistant**, implement with **fullstack-developer** or **frontend-developer**, have **code-reviewer** check the diff, then let **branch-pr** open the PR.
-- For client sites, **client-onboard** scaffolds the repo and **client-deploy** ships it to Cloudflare.
+### work
 
-## Recommended plugins
+Client and project delivery.
 
-Plugins I run alongside the toolkit. Install these to match my full setup:
+| Skill | What it does |
+|---|---|
+| [linear-assistant](./plugins/work/skills/linear-assistant/) | Create, update, and query Linear issues, projects, milestones, and cycles |
 
-```bash
-# Core workflow
-claude plugin add superpowers            # planning, TDD, debugging, review workflows
-claude plugin add pr-review-toolkit      # PR review agents (tests, silent failures, types)
-claude plugin add commit-commands        # commit, push, and PR shortcuts
-claude plugin add code-simplifier        # post-implementation cleanup agent
-claude plugin add claude-md-management   # CLAUDE.md auditing
+### personal
 
-# Frontend and design
-claude plugin add frontend-design        # high-quality UI generation
-claude plugin marketplace add Leonxlnx/taste-skill && claude plugin install taste-skill@taste-skill  # 13 design-taste skills
+Personal-life tooling.
 
-# AI and integrations
-claude plugin add vercel                 # Vercel platform skills
-claude plugin add firecrawl              # web scraping and research
-claude plugin add context7               # library and framework docs
-claude plugin add stripe                 # Stripe integration guidance
+| Skill | What it does |
+|---|---|
+| [apple-calendar](./plugins/personal/skills/apple-calendar/) | Read and write Apple Calendar from a machine that reaches it over the network via the apple-calendar MCP server |
 
-# Productivity
-claude plugin add obsidian               # Obsidian vault management
-claude plugin add learning-output-style  # educational explanations in responses
+### misc
 
-# Language tooling
-claude plugin add swift-lsp
-claude plugin add gopls-lsp
-claude plugin add clangd-lsp
+Everything cross-cutting.
 
-# Other
-claude plugin add greptile               # codebase search
-claude plugin add supabase               # Supabase integration
-```
+| Skill | What it does |
+|---|---|
+| [claude-toolkit](./plugins/misc/skills/claude-toolkit/) | Add, sync, and set up this repo's components across machines |
+| [claude-documentation](./plugins/misc/skills/claude-documentation/) | Generate consistent README docs for skills, hooks, and sub-agents |
+| [skill-builder](./plugins/misc/skills/skill-builder/) | Build a new skill through a structured, validated process |
+| [docx](./plugins/misc/skills/docx/) | Create, read, and edit Word documents, including tracked changes and comments |
+| [notebooklm](./plugins/misc/skills/notebooklm/) | Full programmatic NotebookLM API: notebooks, sources, artifacts, downloads |
+| [tailnet](./plugins/misc/skills/tailnet/) | Move files to tailnet servers, serve files over Tailscale, Taildrop to a phone |
+
+Also ships three hooks that apply everywhere: a `PreToolUse` guard against committing
+`.env` files, a `SessionStart` agent-state tracker, and a `Stop` desktop notification.
+
+### dev-flow
+
+My development workflow chain, split across two sessions with a context clear in between.
+
+| Skill | What it does |
+|---|---|
+| [spec](./plugins/dev-flow/skills/spec/) | Turn an idea into an approved specification |
+| [plan](./plugins/dev-flow/skills/plan/) | Break an approved spec into waves of file-disjoint tasks |
+| [implement](./plugins/dev-flow/skills/implement/) | Execute the plan across persistent subagent slots in git worktrees |
+| [review](./plugins/dev-flow/skills/review/) | Whole-branch review pass with specialist fan-out |
+| [test](./plugins/dev-flow/skills/test/) | Run the plan's verification section, then commit and open the PR |
+
+Includes the `code-reviewer` sub-agent used by the review step, and a `SessionStart`
+resume hook.
+
+### meta-builders
+
+| Skill | What it does |
+|---|---|
+| [skill-creator](./plugins/meta-builders/skills/skill-creator/) | Create and improve skills, run evals, benchmark performance, grade a `SKILL.md` against a structural rubric |
+
+## Status line
+
+[`statusline/`](./statusline/) holds an agnoster-inspired three-row status line:
+where you are, what you are running, and what you are burning. Point
+`statusLine.command` in `settings.json` at `statusline-command.sh`.
+
+## Machine-local configuration
+
+Nothing machine-specific is committed here. Two files live outside the repo:
+
+| File | Used by | Notes |
+|---|---|---|
+| `~/.claude/tailnet-servers.json` | `tailnet` | Server registry: addresses, SSH aliases, default destinations. See [`servers.example.json`](./plugins/misc/skills/tailnet/servers.example.json) for the schema |
+| `~/.claude/settings.json` | everything | Permissions, env, enabled plugins, status line wiring |
