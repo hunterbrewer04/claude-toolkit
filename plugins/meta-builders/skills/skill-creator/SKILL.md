@@ -1,6 +1,6 @@
 ---
 name: skill-creator
-description: Creates new skills, modifies and improves existing skills, measures skill performance via evaluations, and grades a SKILL.md against Anthropic's structural best-practices rubric. Use when the user asks to create, write, build, or design a skill, update or optimize an existing skill, run evals to test a skill, benchmark skill performance with variance analysis, optimize a skill's description for triggering accuracy, grade a skill, audit a skill, or check if a skill follows best practices. Do NOT use for writing general Python scripts, non-skill documentation, sub-agents (use agent-builder), or hooks (use hook-builder).
+description: Creates new skills, modifies and improves existing skills, measures skill performance via evaluations, and grades a SKILL.md against Anthropic's structural best-practices rubric. Use when the user asks to create, write, build, or design a skill, update or optimize an existing skill, run evals to test a skill, benchmark skill performance with variance analysis, optimize a skill's description for triggering accuracy, grade a skill, audit a skill, or check if a skill follows best practices. Do NOT use for writing general Python scripts, non-skill documentation, sub-agents, or hooks.
 allowed-tools:
   - Read
   - Write

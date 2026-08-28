@@ -1,0 +1,37 @@
+{
+  "name": "brewkit",
+  "description": "BrewKit. Hunter Brewer's personal Claude Code toolkit.",
+  "owner": { "name": "Hunter Brewer" },
+  "plugins": [
+    {
+      "name": "school",
+      "source": "./plugins/school",
+      "description": "Coursework tooling: course scaffolding, grade math, NotebookLM sync, rubric checks, study guides, AI-detection scans."
+    },
+    {
+      "name": "work",
+      "source": "./plugins/work",
+      "description": "Client and project delivery tooling. Linear issue, project, and cycle management."
+    },
+    {
+      "name": "personal",
+      "source": "./plugins/personal",
+      "description": "Personal-life tooling. Apple Calendar read and write via EventKit."
+    },
+    {
+      "name": "misc",
+      "source": "./plugins/misc",
+      "description": "Cross-cutting tooling: toolkit and doc authoring, Word documents, NotebookLM, skill authoring, tailnet transfers, and the global hooks."
+    },
+    {
+      "name": "dev-flow",
+      "source": "./plugins/dev-flow",
+      "description": "Development workflow chain: spec, plan, implement, review, test."
+    },
+    {
+      "name": "meta-builders",
+      "source": "./plugins/meta-builders",
+      "description": "Skill authoring and evaluation suite: skill-creator with eval and benchmark scripts."
+    }
+  ]
+}

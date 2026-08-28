@@ -1,0 +1,8 @@
+{
+  "name": "work",
+  "version": "1.0.0",
+  "description": "Client and project delivery tooling. Currently Linear issue, project, and cycle management.",
+  "author": {
+    "name": "Hunter Brewer"
+  }
+}

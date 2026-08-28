@@ -1,0 +1,112 @@
+{
+  "skill_name": "dev-flow",
+  "notes": "Behavioral layer. Each case names the skill under test and the behavior that must hold. Run per skill-creator step 5.",
+  "evals": [
+    {
+      "id": 1,
+      "skill": "spec",
+      "prompt": "the login redirect is sending people to /dashboard instead of back to where they were. fix it",
+      "expected_output": "Classified bounded and announced as such. No spec page written, no plan page written, no question loop. Hands to implement.",
+      "assertions": [
+        "announces the tier before doing anything else",
+        "classifies as bounded",
+        "writes no gbrain spec page",
+        "does not invoke dev-flow:plan"
+      ],
+      "files": []
+    },
+    {
+      "id": 2,
+      "skill": "spec",
+      "prompt": "i want to add a label template system to the kilgus app so users can save and reuse label layouts",
+      "expected_output": "Classified architectural. Searches gbrain for prior kilgus decisions before asking anything. Runs the question loop one question per message. Does not write the spec page until the design has been approved in sections.",
+      "assertions": [
+        "classifies as architectural",
+        "queries gbrain before asking the first question",
+        "asks exactly one question per message",
+        "does not write the spec page before presenting a design",
+        "asks how Hunter wants it verified"
+      ],
+      "files": []
+    },
+    {
+      "id": 3,
+      "skill": "spec",
+      "prompt": "[after a spec has been presented] ok",
+      "expected_output": "Treats a bare 'ok' as non-affirmative. Asks again rather than advancing to dev-flow:plan.",
+      "assertions": [
+        "does not invoke dev-flow:plan",
+        "asks the verification question again"
+      ],
+      "files": []
+    },
+    {
+      "id": 4,
+      "skill": "plan",
+      "prompt": "[spec exists] plan this out",
+      "expected_output": "Waves derived from affected-set disjointness, not file lists. Two tasks whose depth-1 sets intersect must land in different waves even when their file lists do not overlap.",
+      "assertions": [
+        "runs graphify affected per task",
+        "places tasks with intersecting depth-1 sets in different waves",
+        "does not cap wave width at 3 or 5",
+        "every brief's DECIDED block contains no open decisions",
+        "writes handoff.md and stops without invoking implement"
+      ],
+      "files": ["fixtures/conflicting-tasks/"]
+    },
+    {
+      "id": 5,
+      "skill": "implement",
+      "prompt": "[handoff.md present, wave 2 of 4] go",
+      "expected_output": "Resumes at wave 2 rather than wave 1. Uses at most 3 slots regardless of how many tasks the wave holds. Extras queue.",
+      "assertions": [
+        "resumes at the wave named in handoff.md",
+        "spawns at most 3 subagents concurrently",
+        "queues tasks beyond slot count rather than spawning more slots",
+        "dispatches review as each task returns, not after the whole wave",
+        "orchestrator writes no production code"
+      ],
+      "files": []
+    },
+    {
+      "id": 6,
+      "skill": "implement",
+      "prompt": "[a task agent returns Status: complete with no Gauntlet section]",
+      "expected_output": "Rejects the completion. Does not merge, does not advance the wave.",
+      "assertions": [
+        "does not accept the task as complete",
+        "does not merge the task branch"
+      ],
+      "files": []
+    },
+    {
+      "id": 7,
+      "skill": "review",
+      "prompt": "[branch with all waves merged] review the build",
+      "expected_output": "Runs /simplify before the specialist fan-out, re-runs the gauntlet after it, dispatches at most 3 specialists, and drops findings that lack a concrete failure scenario.",
+      "assertions": [
+        "runs /simplify before dispatching specialists",
+        "re-runs the gauntlet after /simplify",
+        "dispatches at most 3 specialists",
+        "records dropped findings with reasons",
+        "never mentions or runs /code-review ultra"
+      ],
+      "files": []
+    },
+    {
+      "id": 8,
+      "skill": "test",
+      "prompt": "[plan Verification section names serve-sim] verify and ship",
+      "expected_output": "Routes to serve-sim, not to a browser. Records verbatim output. Reads repo CLAUDE.md before pushing and honors a no-push restriction by committing and stopping.",
+      "assertions": [
+        "dispatches to serve-sim",
+        "does not dispatch to claude-in-chrome",
+        "records verbatim output rather than a summary",
+        "reads repo CLAUDE.md before pushing",
+        "commit message contains no AI attribution",
+        "does not merge"
+      ],
+      "files": ["fixtures/no-push-repo/"]
+    }
+  ]
+}

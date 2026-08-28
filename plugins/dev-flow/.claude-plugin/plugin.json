@@ -1,0 +1,8 @@
+{
+  "name": "dev-flow",
+  "version": "0.1.0",
+  "description": "Hunter's development workflow chain: spec, plan, implement, review, test. Two-session split with gbrain as the system of record and graphify as the code-navigation layer.",
+  "author": {
+    "name": "Hunter Brewer"
+  }
+}
