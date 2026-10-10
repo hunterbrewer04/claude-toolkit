@@ -1,0 +1,9 @@
+{
+  "name": "processes",
+  "version": "0.1.0",
+  "description": "Sidebar section listing the background and detached processes Claude starts, with their ports and a kill button",
+  "author": {
+    "name": "Hunter Brewer"
+  },
+  "types": "./types/index.d.ts"
+}

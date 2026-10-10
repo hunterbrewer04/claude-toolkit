@@ -3,7 +3,7 @@
 > My personal Claude Code setup, packaged as a plugin marketplace so I can install exactly the pieces a given machine needs.
 
 This is a public snapshot of how I extend [Claude Code](https://docs.claude.com/en/docs/claude-code).
-It ships **6 plugins** covering 20 skills, 1 sub-agent, 4 hooks, and a custom status line.
+It ships **10 plugins** covering 20 skills, 1 sub-agent, 4 hooks, 4 mods, and a custom status line.
 
 Most pieces follow my own paths and conventions, so treat them as reference patterns
 to borrow from rather than drop-in installs.
@@ -85,6 +85,36 @@ resume hook.
 | Skill | What it does |
 |---|---|
 | [skill-creator](./plugins/meta-builders/skills/skill-creator/) | Create and improve skills, run evals, benchmark performance, grade a `SKILL.md` against a structural rubric |
+
+### sidebar
+
+A [mod](https://code.claude.com/docs/en/plugins/mods/overview): a docked sidebar for the widget
+mods. Widgets publish their section and handle their own buttons; the sidebar only draws, so a new
+widget needs no change here. The `layout` option picks how: `tabs` (the default) gives each widget
+its own pane, shown as tabs titled with the widget's badge (`Checklist 93%`), opened when the widget
+has something, focused when it asks for attention, and closed when it empties; `stacked` draws every
+section in one pane that opens itself on attention. The `order` option sets the tab order or the
+stacking. `/sidebar` opens it, `/sidebar close` hides it.
+
+### checklist
+
+A mod: a live checklist of the current plan, drawn as a section in the sidebar.
+Claude posts the steps through its own `checklist` tool and checks each one off as it finishes,
+subagents working a step show under it with their status and tool-call count, and the status
+line carries `done/total`. `/checklist` prints the list, `/checklist clear` empties it.
+
+### questions
+
+A mod: questions Claude asks without stopping the work. Each one comes with the default Claude
+goes with meanwhile and gets an answer field in the sidebar. An answer reaches Claude on its next
+step, with a note to redo anything built on the default. Questions still open at the end of a
+turn get a toast.
+
+### processes
+
+A mod: the background commands and dev servers Claude started this session, shown in the sidebar
+with their ports and uptime and a button that kills one. Nothing is ever killed automatically;
+anything still running when the session ends gets a toast.
 
 ## Status line
 
