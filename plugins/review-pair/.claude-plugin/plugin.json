@@ -1,0 +1,9 @@
+{
+  "name": "review-pair",
+  "version": "0.1.0",
+  "description": "Pairs each builder session with a read-only reviewer session that reviews every commit.",
+  "author": {
+    "name": "Hunter Brewer"
+  },
+  "types": "./types/index.d.ts"
+}

@@ -1,7 +1,9 @@
 {
   "name": "brewkit",
   "description": "BrewKit. Hunter Brewer's personal Claude Code toolkit.",
-  "owner": { "name": "Hunter Brewer" },
+  "owner": {
+    "name": "Hunter Brewer"
+  },
   "plugins": [
     {
       "name": "school",
@@ -52,6 +54,11 @@
       "name": "processes",
       "source": "./plugins/processes",
       "description": "Mod: background processes and dev servers Claude started, with ports, uptime and a kill button."
+    },
+    {
+      "name": "review-pair",
+      "source": "./plugins/review-pair",
+      "description": "Mod: pairs each builder session with a reviewer session that reviews every commit, sends blockers back to the builder, and shows the rest in the sidebar."
     }
   ]
 }
