@@ -1,0 +1,9 @@
+{
+  "name": "questions",
+  "version": "0.1.0",
+  "description": "Question queue: Claude posts a question with a default, Hunter answers it in the sidebar, and the answer reaches Claude as context",
+  "author": {
+    "name": "Hunter Brewer"
+  },
+  "types": "./types/index.d.ts"
+}

@@ -32,6 +32,26 @@
       "name": "meta-builders",
       "source": "./plugins/meta-builders",
       "description": "Skill authoring and evaluation suite: skill-creator with eval and benchmark scripts."
+    },
+    {
+      "name": "checklist",
+      "source": "./plugins/checklist",
+      "description": "Mod: checklist for the current plan, with the subagents working each step, shown as a section in the sidebar."
+    },
+    {
+      "name": "sidebar",
+      "source": "./plugins/sidebar",
+      "description": "Mod: one docked pane that stacks a section for each widget mod, in a configurable order."
+    },
+    {
+      "name": "questions",
+      "source": "./plugins/questions",
+      "description": "Mod: non-blocking questions Claude asks with a stated default, answered from the sidebar."
+    },
+    {
+      "name": "processes",
+      "source": "./plugins/processes",
+      "description": "Mod: background processes and dev servers Claude started, with ports, uptime and a kill button."
     }
   ]
 }

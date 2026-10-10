@@ -4,6 +4,9 @@ __pycache__/
 *.pyc
 .claude/settings.local.json
 
+# Types Claude Code writes into a mod's folder on every load
+**/.claude-plugin/types/
+
 # Machine-local config, never committed
 **/servers.json
 **/state/

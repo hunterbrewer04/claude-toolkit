@@ -1,0 +1,27 @@
+{
+  "name": "sidebar",
+  "version": "0.1.0",
+  "description": "A docked sidebar for widget mods (checklist, questions, processes, and any other): one tab per widget, or one stacked pane",
+  "author": {
+    "name": "Hunter Brewer"
+  },
+  "types": "./types/index.d.ts",
+  "userConfig": {
+    "layout": {
+      "type": "string",
+      "title": "Layout",
+      "description": "tabs: one pane per widget, shown as tabs that open when the widget has something and close when it empties. stacked: one pane with every widget's section stacked.",
+      "options": [
+        "tabs",
+        "stacked"
+      ],
+      "default": "tabs"
+    },
+    "order": {
+      "type": "string",
+      "title": "Section order",
+      "description": "Comma-separated widget names: top to bottom when stacked, tab order when several tabs open at once. Widgets not named here follow in the order they first appeared.",
+      "default": "checklist,questions,processes"
+    }
+  }
+}
