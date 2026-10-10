@@ -70,6 +70,7 @@ export const register: Register = on => {
     if (repo === undefined) return next(e)
     const before = await safe(() => probe($, repo.top))
 
+    const started = await $.clock.now()
     const ran = await next(e)
     if (ran.deny !== undefined) return ran
 
@@ -79,7 +80,7 @@ export const register: Register = on => {
         if (url !== undefined) await sendPr($, repo, url)
       }
       const after = await safe(() => probe($, repo.top))
-      if (before !== undefined && after !== undefined) await observe($, repo, before, after)
+      if (before !== undefined && after !== undefined) await observe($, repo, before, after, started)
     })
 
     return ran
@@ -233,6 +234,35 @@ async function isAncestor($: EngineInterface, older: string, newer: string, cwd:
   return run.exitCode === 0
 }
 
+// Commits in before..after whose commit time falls in the call (two seconds of slack). Newest first, as git lists them.
+async function commitsMadeSince(
+  $: EngineInterface,
+  repo: Repo,
+  before: string,
+  after: string,
+  started: number,
+): Promise<string[]> {
+  const log = await $.process.run(['git', 'log', '--format=%H %ct', `${before}..${after}`], { cwd: repo.top })
+  if (log.exitCode !== 0) return []
+  const floor = Math.floor(started / 1000) - 2
+  const made: string[] = []
+  for (const line of log.stdout.split('\n')) {
+    const match = /^([0-9a-f]+) (\d+)$/.exec(line.trim())
+    if (match === null) continue
+    if (Number(match[2]) >= floor) made.push(match[1] as string)
+  }
+
+  return made
+}
+
+// The parent of the oldest new commit is where the range starts; a root commit or a failed lookup falls back to the old head.
+async function rangeStartOf($: EngineInterface, cwd: string, oldest: string, fallback: string): Promise<string> {
+  const parent = await $.process.run(['git', 'rev-parse', `${oldest}^`], { cwd })
+  const sha = parent.stdout.trim()
+
+  return parent.exitCode === 0 && sha !== '' ? sha : fallback
+}
+
 async function subjectOf($: EngineInterface, cwd: string): Promise<string> {
   const subject = await $.process.run(['git', 'log', '-1', '--format=%s'], { cwd })
 
@@ -240,7 +270,7 @@ async function subjectOf($: EngineInterface, cwd: string): Promise<string> {
 }
 
 // Decides whether this git call moved HEAD in a way that is a new range to review.
-async function observe($: EngineInterface, repo: Repo, before: Head, after: Head): Promise<void> {
+async function observe($: EngineInterface, repo: Repo, before: Head, after: Head, started: number): Promise<void> {
   const s = await getSession($)
   const seen = s.repos[repo.key]?.seen ?? null
   let start = before.head
@@ -255,11 +285,17 @@ async function observe($: EngineInterface, repo: Repo, before: Head, after: Head
 
   const sameBranch = before.branch === after.branch
   const movedBack = after.head !== before.head && (await isAncestor($, after.head, before.head, repo.top))
-  // A switch that also commits (git checkout -b feat && git commit) reviews before..after; the old branch's last-seen start does not apply.
+  // A switch that also commits (git checkout -b feat && git commit) reviews only the commits this call made; a plain checkout reviews nothing.
   const newBranchCommit =
     !sameBranch && after.head !== before.head && (await isAncestor($, before.head, after.head, repo.top))
-  if (newBranchCommit) start = before.head
-  if ((sameBranch && !movedBack && after.head !== start) || newBranchCommit) {
+  if (newBranchCommit) {
+    const made = await commitsMadeSince($, repo, before.head, after.head, started)
+    if (made.length > 0) {
+      const from = await rangeStartOf($, repo.top, made[made.length - 1] as string, before.head)
+      const subject = await subjectOf($, repo.top)
+      await newRange($, repo, { before: from, after: after.head, branch: after.branch, subject })
+    }
+  } else if (sameBranch && !movedBack && after.head !== start) {
     const subject = await subjectOf($, repo.top)
     await newRange($, repo, { before: start, after: after.head, branch: after.branch, subject })
   }

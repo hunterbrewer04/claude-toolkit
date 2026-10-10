@@ -10,6 +10,7 @@ import {
   NAME,
   NAME_OTHER_REPO,
   NOW,
+  NOW_S,
   RECORD,
   SESSION_ID,
   TOP,
@@ -473,8 +474,14 @@ describe('review-pair builder', () => {
     expect(w.sends).toHaveLength(0)
   })
 
-  test('a chained checkout -b and commit reviews before..after once, and the next git call does not resend', async ($: any, on) => {
-    const w = newWorld({ heads: [H.a, H.b], branches: ['main', 'feat'], ancestors: [[H.a, H.b]] })
+  test('a chained checkout -b and commit reviews parent..after once, and the next git call does not resend', async ($: any, on) => {
+    const w = newWorld({
+      heads: [H.a, H.b],
+      branches: ['main', 'feat'],
+      ancestors: [[H.a, H.b]],
+      logLines: [`${H.b} ${NOW_S}`],
+      parents: { [H.b]: H.a },
+    })
     beneath(on, w)
     stubs(on, {}, ALWAYS)
 
@@ -483,6 +490,36 @@ describe('review-pair builder', () => {
 
     await $.tool.call({ tool: 'Bash', command: 'git status' } as any)
     expect(w.sends).toHaveLength(1)
+  })
+
+  test('a plain checkout of an ahead branch sends nothing when no commit was made during the call', async ($: any, on) => {
+    const w = newWorld({
+      heads: [H.a, H.b],
+      branches: ['main', 'feat'],
+      ancestors: [[H.a, H.b]],
+      logLines: [`${H.b} ${NOW_S - 3600}`],
+      parents: { [H.b]: H.a },
+    })
+    beneath(on, w)
+    stubs(on, {}, ALWAYS)
+
+    await $.tool.call({ tool: 'Bash', command: 'git checkout feat' } as any)
+    expect(w.sends).toHaveLength(0)
+  })
+
+  test('a checkout of an ahead branch plus a commit in the same call sends only the new commit', async ($: any, on) => {
+    const w = newWorld({
+      heads: [H.a, H.c],
+      branches: ['main', 'feat'],
+      ancestors: [[H.a, H.c]],
+      logLines: [`${H.c} ${NOW_S}`, `${H.b} ${NOW_S - 3600}`],
+      parents: { [H.c]: H.b },
+    })
+    beneath(on, w)
+    stubs(on, {}, ALWAYS)
+
+    await $.tool.call({ tool: 'Bash', command: 'git checkout feat && git commit -m x' } as any)
+    expect(w.sends.map(s => s.text.split('\n')[0])).toEqual([`[review-pair] REVIEW ${H.b}..${H.c}`])
   })
 
   test('a failed chained call still detects the commit', async ($: any, on) => {

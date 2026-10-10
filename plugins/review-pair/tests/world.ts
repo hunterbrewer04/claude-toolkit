@@ -9,6 +9,7 @@ export const LEASE = `spawning:${COMMON}`
 export const FAILURE = `failure:${COMMON}`
 export const SESSION_ID = 'sess-1'
 export const NOW = new Date(2026, 9, 9, 12).getTime()
+export const NOW_S = Math.floor(NOW / 1000)
 // reviewerName(): 'reviewer-' + slug of the basename + '-' + 6 hex of FNV-1a of the repo key.
 export const NAME = 'reviewer-app-14a482'
 export const NAME_OTHER_REPO = 'reviewer-app-d559b1'
@@ -35,6 +36,10 @@ export type World = {
   branches: string[]
   // Pairs [older, newer]: the first is an ancestor of the second.
   ancestors: [string, string][]
+  // Lines answered to `git log --format=%H %ct`, newest first: `<sha> <unix seconds>`.
+  logLines: string[]
+  // Parent of each commit, answered to `git rev-parse <sha>^`; a commit missing here has no parent to give.
+  parents: Record<string, string>
   runs: Run[]
   sends: Sent[]
   toasts: string[]
@@ -61,6 +66,8 @@ export function newWorld(overrides: Partial<World> = {}): World {
     heads: [H.a, H.b],
     branches: ['main'],
     ancestors: [],
+    logLines: [],
+    parents: {},
     runs: [],
     sends: [],
     toasts: [],
@@ -108,6 +115,14 @@ function respond(world: World, argv: readonly string[]): Record<string, unknown>
       const found = world.ancestors.some(([older, newer]) => older === argv[3] && newer === argv[4])
 
       return exit(found ? 0 : 1)
+    }
+    if (a === 'rev-parse' && b?.endsWith('^')) {
+      const parent = world.parents[b.slice(0, -1)]
+
+      return parent === undefined ? exit(128) : ok(`${parent}\n`)
+    }
+    if (a === 'log' && argv[2] === '--format=%H %ct') {
+      return ok(world.logLines.map(line => `${line}\n`).join(''))
     }
     if (a === 'log') return ok('feat: add thing\n')
   }
