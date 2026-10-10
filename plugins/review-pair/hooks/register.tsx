@@ -29,6 +29,9 @@ const BUILDER_TTL_MS = 12 * 60 * 60_000
 const SPAWN_TIMEOUT_MS = 70_000
 const UPDATE_TRIES = 20
 const SHELL_WAIT_TRIES = 12
+// `claude --bg` returns before the new session has its messaging socket, so a send to it at once finds nobody by that name.
+const READY_TRIES = 60
+const READY_WAIT_S = '1'
 const REVIEWER_PROMPT = 'You are the review-pair reviewer for this repo. Wait for review requests.'
 const GIT_WORD = /\bgit\b/
 const PR_CREATE = /\bgh\s+pr\s+create\b/
@@ -39,7 +42,8 @@ const EDIT_REASON = 'review-pair reviewer is read-only: it never edits files.'
 const BUSY = 'busy'
 
 type Lease = { by: string; at: number }
-type Found = Reviewer | typeof BUSY | undefined
+// `fresh`: this call just started the reviewer, so it may not take messages yet.
+type Found = { reviewer: Reviewer; fresh: boolean } | typeof BUSY | undefined
 type Head = { head: string; branch: string }
 
 export const register: Register = on => {
@@ -308,7 +312,7 @@ async function observe($: EngineInterface, repo: Repo, before: Head, after: Head
 async function sendPr($: EngineInterface, repo: Repo, url: string): Promise<void> {
   const reviewer = await readReviewer($, repo)
   if (reviewer === undefined) return
-  if (!(await sendTo($, reviewer.name, `${TAG} PR ${url}`))) {
+  if (!(await sendTo($, reviewer.name, `${TAG} PR ${url}`, 1))) {
     $.ui.toast(`review-pair: could not reach the reviewer for ${repo.name}`)
   }
 }
@@ -550,15 +554,26 @@ async function sendReview($: EngineInterface, repo: Repo, pending: Pending): Pro
       return
     }
 
-    const merged = await reserve($, repo, pending, found)
+    const { reviewer, fresh } = found
+    const merged = await reserve($, repo, pending, reviewer)
     const text = `${TAG} REVIEW ${rangeOf(merged)}\n${merged.branch}: ${merged.subject}`
-    if (await sendTo($, found.name, text)) {
+    // A background reviewer just started is still booting: wait for it to take the message instead of stopping it at once.
+    const tries = fresh && reviewer.mode === 'bg' ? READY_TRIES : 1
+    if (await sendTo($, reviewer.name, text, tries)) {
       await addBuilder($, repo)
       await publish($)
 
       return
     }
-    await dropReviewer($, repo, found)
+    await dropReviewer($, repo, reviewer)
+    if (fresh) {
+      // A reviewer that never came up is not respawned in a loop: back off like a failed spawn.
+      await park($, repo, pending)
+      const now = await $.clock.now()
+      await failed($, repo, now, `not reachable after ${tries} tries`)
+
+      return
+    }
   }
 
   await park($, repo, pending)
@@ -590,13 +605,20 @@ async function park($: EngineInterface, repo: Repo, pending: Pending): Promise<v
   await publish($)
 }
 
-async function sendTo($: EngineInterface, name: string, text: string): Promise<boolean> {
-  try {
-    const sent = await $.session.send({ to: name, text })
-
-    return sent.isDelivered
-  } catch {
-    return false
+// Sends up to `tries` times, a second apart; each refusal goes to the debug log with its reason.
+async function sendTo($: EngineInterface, name: string, text: string, tries: number): Promise<boolean> {
+  for (let attempt = 1; ; attempt += 1) {
+    let reason: string
+    try {
+      const sent = await $.session.send({ to: name, text })
+      if (sent.isDelivered) return true
+      reason = sent.reason
+    } catch (error) {
+      reason = `threw: ${String(error)}`
+    }
+    $.ui.log(`${TAG} send to ${name} failed (try ${attempt}/${tries}): ${reason.slice(0, 200)}`, { to: 'debug' })
+    if (attempt >= tries) return false
+    await $.process.run(['sleep', READY_WAIT_S])
   }
 }
 
@@ -629,7 +651,7 @@ async function ensureReviewer($: EngineInterface, repo: Repo): Promise<Found> {
   const now = await $.clock.now()
   const day = localDay(now)
   const current = await readReviewer($, repo)
-  if (current !== undefined && current.day === day) return current
+  if (current !== undefined && current.day === day) return { reviewer: current, fresh: false }
 
   const lease = (await $.store.get(spawningKey(repo.key))) as Lease | undefined
   if (lease !== undefined && lease.by !== me && now - lease.at < LEASE_MS) return BUSY
@@ -642,12 +664,11 @@ async function ensureReviewer($: EngineInterface, repo: Repo): Promise<Found> {
   try {
     if (current !== undefined) await dropReviewer($, repo, current)
     const started = await spawnReviewer($, repo, day, now)
-    if (started !== undefined) {
-      await $.store.set(reviewerKey(repo.key), started)
-      await $.store.delete(failureKey(repo.key))
-    }
+    if (started === undefined) return undefined
+    await $.store.set(reviewerKey(repo.key), started)
+    await $.store.delete(failureKey(repo.key))
 
-    return started
+    return { reviewer: started, fresh: true }
   } finally {
     await $.store.delete(spawningKey(repo.key))
   }
