@@ -3,7 +3,7 @@
 > My personal Claude Code setup, packaged as a plugin marketplace so I can install exactly the pieces a given machine needs.
 
 This is a public snapshot of how I extend [Claude Code](https://docs.claude.com/en/docs/claude-code).
-It ships **10 plugins** covering 20 skills, 1 sub-agent, 4 hooks, 4 mods, and a custom status line.
+It ships **11 plugins** covering 20 skills, 1 sub-agent, 4 hooks, 5 mods, and a custom status line.
 
 Most pieces follow my own paths and conventions, so treat them as reference patterns
 to borrow from rather than drop-in installs.
@@ -115,6 +115,16 @@ turn get a toast.
 A mod: the background commands and dev servers Claude started this session, shown in the sidebar
 with their ports and uptime and a button that kills one. Nothing is ever killed automatically;
 anything still running when the session ends gets a toast.
+
+### review-pair
+
+A mod: a second Claude session that reviews every commit the session you are working in makes.
+The first commit in a repo asks once (always, not now, never). On always, a Sonnet reviewer opens
+in a herdr pane beside you (or as a background session outside herdr) and gets each new commit
+range. Blockers go back to the builder, which fixes them, for up to two rounds; nits and clean
+reviews go to a Review tab in the sidebar, and nits are posted as one PR comment when the builder
+opens a PR. The reviewer cannot use the Edit or Write tools and closes when the last builder in
+that repo ends. `/review-pair` shows the status; `on`, `off`, `forget` and `stop` change it.
 
 ## Status line
 
