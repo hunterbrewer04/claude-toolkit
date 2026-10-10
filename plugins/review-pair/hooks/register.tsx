@@ -28,6 +28,7 @@ const BACKOFF_MS = 10 * 60_000
 const BUILDER_TTL_MS = 12 * 60 * 60_000
 const SPAWN_TIMEOUT_MS = 70_000
 const UPDATE_TRIES = 20
+const SHELL_WAIT_TRIES = 12
 const REVIEWER_PROMPT = 'You are the review-pair reviewer for this repo. Wait for review requests.'
 const GIT_WORD = /\bgit\b/
 const PR_CREATE = /\bgh\s+pr\s+create\b/
@@ -163,13 +164,15 @@ export const register: Register = on => {
     if (first === undefined) return next(e)
 
     const { Box, Text, Button } = $.ui.resolve(e)
+    const press = (choice: 'always' | 'not now' | 'never'): (() => void) => () =>
+      void answer($, choice).catch(() => $.ui.toast('review-pair: could not save that answer'))
 
     return Box({
       children: [
         Text({ children: `Start a reviewer for ${first.repo.name}?` }),
-        Button({ key: 'review-pair:always', label: 'always', onPress: () => answer($, 'always') }),
-        Button({ key: 'review-pair:not-now', label: 'not now', onPress: () => answer($, 'not now') }),
-        Button({ key: 'review-pair:never', label: 'never', onPress: () => answer($, 'never') }),
+        Button({ key: 'review-pair:always', label: 'always', onPress: press('always') }),
+        Button({ key: 'review-pair:not-now', label: 'not now', onPress: press('not now') }),
+        Button({ key: 'review-pair:never', label: 'never', onPress: press('never') }),
       ],
     })
   })
@@ -252,7 +255,11 @@ async function observe($: EngineInterface, repo: Repo, before: Head, after: Head
 
   const sameBranch = before.branch === after.branch
   const movedBack = after.head !== before.head && (await isAncestor($, after.head, before.head, repo.top))
-  if (sameBranch && !movedBack && after.head !== start) {
+  // A switch that also commits (git checkout -b feat && git commit) reviews before..after; the old branch's last-seen start does not apply.
+  const newBranchCommit =
+    !sameBranch && after.head !== before.head && (await isAncestor($, before.head, after.head, repo.top))
+  if (newBranchCommit) start = before.head
+  if ((sameBranch && !movedBack && after.head !== start) || newBranchCommit) {
     const subject = await subjectOf($, repo.top)
     await newRange($, repo, { before: start, after: after.head, branch: after.branch, subject })
   }
@@ -705,8 +712,6 @@ async function failed($: EngineInterface, repo: Repo, now: number, reason: strin
 
 type AgentStart = 'started' | 'not-ready' | 'busy' | 'failed'
 
-const SHELL_WAIT_TRIES = 12
-
 // Only an agent_started result is a start. agent_not_ready means the agent is up but blocked on a prompt;
 // agent_pane_busy means the pane's shell is not ready yet. herdr exits non-zero on errors, so the JSON decides.
 function agentStartOf(run: { exitCode: number; stdout: string }): AgentStart {
@@ -779,12 +784,14 @@ async function runCommand($: EngineInterface, args: string): Promise<string> {
 
   if (word === 'on') {
     await $.store.set(decisionKey(repo.key), 'always')
+    await dropConsent($, repo, true)
 
     return `always for ${repo.name}. The reviewer starts at the next commit.`
   }
 
   if (word === 'off') {
     await $.store.set(decisionKey(repo.key), 'never')
+    await dropConsent($, repo, false)
     await stopReviewer($, repo)
 
     return `never for ${repo.name}. Reviewer stopped.`
@@ -792,6 +799,7 @@ async function runCommand($: EngineInterface, args: string): Promise<string> {
 
   if (word === 'forget') {
     await $.store.delete(decisionKey(repo.key))
+    await dropConsent($, repo, false)
     await stopReviewer($, repo)
 
     return `decision and reviewer record cleared for ${repo.name}.`
@@ -804,6 +812,20 @@ async function runCommand($: EngineInterface, args: string): Promise<string> {
   }
 
   return 'Usage: /review-pair [status|on|off|forget|stop]'
+}
+
+// Removes the repo's pending consent band. `lift` also clears a session-level "not now" so the next range can start a reviewer.
+async function dropConsent($: EngineInterface, repo: Repo, lift: boolean): Promise<void> {
+  const consents = await readConsents($)
+  const kept = consents.filter(one => one.repo.key !== repo.key)
+  if (kept.length !== consents.length) await $.state.set(CONSENTS, kept)
+  if (lift) {
+    await update($, s => {
+      const run = s.repos[repo.key]
+      if (run !== undefined) run.notNow = false
+    })
+  }
+  await publish($)
 }
 
 // Closes the reviewer and clears the lease, backoff, outstanding range and queue for the repo.

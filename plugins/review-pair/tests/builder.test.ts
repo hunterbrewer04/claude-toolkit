@@ -329,6 +329,22 @@ describe('review-pair builder', () => {
     expect(spawnsOf(w)).toHaveLength(0)
   })
 
+  test('not now, then /review-pair on, then the next commit spawns and sends', async ($: any, on) => {
+    const w = newWorld({ heads: [H.a, H.b, H.b, H.c] })
+    beneath(on, w)
+    stubs(on)
+
+    await $.tool.call(commit('x') as any)
+    const ui = await $.ui.mount({ plugin: 'review-pair', surface: 'terminal', component: 'AbovePrompt', props: BAND_PROPS } as any)
+    await ui.press({ plugin: 'review-pair', key: 'review-pair:not-now' } as any)
+    await ui.unmount()
+
+    await $.command.run({ command: 'review-pair', args: 'on' } as any)
+    await $.tool.call(commit('y') as any)
+    expect(spawnsOf(w)).toHaveLength(1)
+    expect(w.sends.map(s => s.text.split('\n')[0])).toEqual([`[review-pair] REVIEW ${H.b}..${H.c}`])
+  })
+
   test('never stores the decision and later commits do nothing', async ($: any, on) => {
     const w = newWorld({ heads: [H.a, H.b, H.b, H.c] })
     beneath(on, w)
@@ -455,6 +471,18 @@ describe('review-pair builder', () => {
 
     await $.tool.call({ tool: 'Bash', command: 'git switch feature' } as any)
     expect(w.sends).toHaveLength(0)
+  })
+
+  test('a chained checkout -b and commit reviews before..after once, and the next git call does not resend', async ($: any, on) => {
+    const w = newWorld({ heads: [H.a, H.b], branches: ['main', 'feat'], ancestors: [[H.a, H.b]] })
+    beneath(on, w)
+    stubs(on, {}, ALWAYS)
+
+    await $.tool.call({ tool: 'Bash', command: 'git checkout -b feat && git commit -m x' } as any)
+    expect(w.sends.map(s => s.text.split('\n')[0])).toEqual([`[review-pair] REVIEW ${H.a}..${H.b}`])
+
+    await $.tool.call({ tool: 'Bash', command: 'git status' } as any)
+    expect(w.sends).toHaveLength(1)
   })
 
   test('a failed chained call still detects the commit', async ($: any, on) => {

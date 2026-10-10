@@ -1,9 +1,7 @@
 {
   "name": "brewkit",
   "description": "BrewKit. Hunter Brewer's personal Claude Code toolkit.",
-  "owner": {
-    "name": "Hunter Brewer"
-  },
+  "owner": { "name": "Hunter Brewer" },
   "plugins": [
     {
       "name": "school",
