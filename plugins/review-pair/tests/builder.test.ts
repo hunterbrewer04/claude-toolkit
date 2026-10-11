@@ -99,6 +99,44 @@ describe('review-pair builder', () => {
     expect(await statusOf($)).toContain(`reviewer: ${NAME} (bg, 2026-10-09)`)
   })
 
+  test('a background reviewer that is still booting is waited for, not stopped and respawned', async ($: any, on) => {
+    // `claude --bg` returns before the session takes messages: the first sends find nobody by that name.
+    const w = newWorld({ failSends: 3 })
+    beneath(on, w)
+    stubs(on, {}, { [DECISION]: 'always' })
+
+    await $.tool.call(commit('x') as any)
+
+    expect(spawnsOf(w)).toHaveLength(1)
+    expect(w.runs.some(r => r.argv[0] === 'claude' && r.argv[1] === 'stop')).toBe(false)
+    expect(w.runs.filter(r => r.argv[0] === 'sleep')).toHaveLength(3)
+    expect(w.sends).toHaveLength(4)
+    expect(new Set(w.sends.map(s => s.text.split('\n')[0]))).toEqual(new Set([`[review-pair] REVIEW ${H.a}..${H.b}`]))
+    expect(w.toasts.some(t => t.includes('not reachable'))).toBe(false)
+    expect(w.debugLogs.filter(l => l.startsWith('debug|[review-pair] send to'))).toHaveLength(3)
+    expect(await statusOf($)).toContain(`reviewer: ${NAME} (bg, 2026-10-09)`)
+    expect(await statusOf($)).toContain(`outstanding: ${H.a}..${H.b}`)
+  })
+
+  test('a fresh reviewer that never takes the message is stopped once, backs off, and the range is parked', async ($: any, on) => {
+    const w = newWorld({ delivered: false, heads: [H.a, H.b, H.b, H.c] })
+    beneath(on, w)
+    stubs(on, {}, { [DECISION]: 'always' })
+
+    await $.tool.call(commit('one') as any)
+
+    expect(spawnsOf(w)).toHaveLength(1)
+    expect(w.runs.filter(r => r.argv[0] === 'claude' && r.argv[1] === 'stop').map(r => r.argv)).toEqual([['claude', 'stop', 'bg-1']])
+    expect(w.sends).toHaveLength(60)
+    expect(w.toasts.filter(t => t.startsWith('review-pair: could not start'))).toHaveLength(1)
+    expect(await statusOf($)).toContain('reviewer: none')
+
+    // Inside the backoff the next commit spawns nothing and sends nothing.
+    await $.tool.call(commit('two') as any)
+    expect(spawnsOf(w)).toHaveLength(1)
+    expect(w.sends).toHaveLength(60)
+  })
+
   test('the reviewer always gets --plugin-dir from the mod root, and no env switch', async ($: any, on) => {
     const w = newWorld()
     beneath(on, w)
