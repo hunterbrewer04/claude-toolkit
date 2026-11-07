@@ -1,12 +1,8 @@
-# BrewKit
+# Claude-Toolkit
 
-> My personal Claude Code setup, packaged as a plugin marketplace so I can install exactly the pieces a given machine needs.
+My personal [Claude Code](https://docs.claude.com/en/docs/claude-code) setup, packaged as a plugin marketplace so each machine installs only what it needs.
 
-This is a public snapshot of how I extend [Claude Code](https://docs.claude.com/en/docs/claude-code).
-It ships **11 plugins** covering 20 skills, 1 sub-agent, 4 hooks, 5 mods, and a custom status line.
-
-Most pieces follow my own paths and conventions, so treat them as reference patterns
-to borrow from rather than drop-in installs.
+Most of it follows my own paths and conventions, so treat it as patterns to borrow rather than drop-in installs.
 
 ## Install
 
@@ -15,128 +11,117 @@ to borrow from rather than drop-in installs.
 /plugin install school@brewkit
 ```
 
-Install only the plugins that machine actually needs. Nothing here assumes the others
-are present.
+`brewkit` is the marketplace name the repo declares. Swap `school` for any plugin below.
 
-## Plugins
+## What's inside
+
+| Plugin | What you get |
+|---|---|
+| [school](#school) | Coursework skills |
+| [personal](#personal) | Apple Calendar |
+| [misc](#misc) | Everyday skills and global hooks |
+| [dev-flow](#dev-flow) | Spec-to-PR development workflow |
+| [meta-builders](#meta-builders) | Skill authoring and evals |
+| [sidebar](#sidebar) | Mod: docked sidebar for the widgets below |
+| [checklist](#checklist) | Mod: live plan progress |
+| [questions](#questions) | Mod: questions that don't stop the work |
+| [processes](#processes) | Mod: background commands and dev servers |
+| [review-pair](#review-pair) | Mod: a second session that reviews every commit |
+
+Plus a [status line](#status-line). That's 14 skills, 1 sub-agent, 4 hooks, 5 mods, and the status line.
+
+## Skills
 
 ### school
 
-Coursework tooling.
-
 | Skill | What it does |
 |---|---|
-| [course-setup](./plugins/school/skills/course-setup/) | Scaffold a new course folder and clean Canvas file dumps; owns the `school.json` registry |
-| [grade-calc](./plugins/school/skills/grade-calc/) | Exact grade math from syllabus weights: current grade, what-ifs, target scores |
-| [rubric-check](./plugins/school/skills/rubric-check/) | Grade a draft against its assignment spec before submitting |
-| [study-guide](./plugins/school/skills/study-guide/) | Turn lecture PDFs into a self-contained interactive HTML study package |
 | [notebooklm-course-sync](./plugins/school/skills/notebooklm-course-sync/) | Keep a course's NotebookLM notebook in sync with local files |
-| [sapling-ai-detector](./plugins/school/skills/sapling-ai-detector/) | Scan text for AI-generated content with a per-sentence report |
-
-### work
-
-Client and project delivery.
-
-| Skill | What it does |
-|---|---|
-| [linear-assistant](./plugins/work/skills/linear-assistant/) | Create, update, and query Linear issues, projects, milestones, and cycles |
+| [rubric-check](./plugins/school/skills/rubric-check/) | Grade a draft against its assignment spec before submitting |
+| [sapling-ai-detector](./plugins/school/skills/sapling-ai-detector/) | Scan text for AI-generated content, sentence by sentence |
 
 ### personal
 
-Personal-life tooling.
-
 | Skill | What it does |
 |---|---|
-| [apple-calendar](./plugins/personal/skills/apple-calendar/) | Read and write Apple Calendar from a machine that reaches it over the network via the apple-calendar MCP server |
+| [apple-calendar](./plugins/personal/skills/apple-calendar/) | Read and write Apple Calendar |
 
 ### misc
 
-Everything cross-cutting.
-
 | Skill | What it does |
 |---|---|
-| [claude-toolkit](./plugins/misc/skills/claude-toolkit/) | Add, sync, and set up this repo's components across machines |
-| [claude-documentation](./plugins/misc/skills/claude-documentation/) | Generate consistent README docs for skills, hooks, and sub-agents |
-| [skill-builder](./plugins/misc/skills/skill-builder/) | Build a new skill through a structured, validated process |
-| [docx](./plugins/misc/skills/docx/) | Create, read, and edit Word documents, including tracked changes and comments |
-| [notebooklm](./plugins/misc/skills/notebooklm/) | Full programmatic NotebookLM API: notebooks, sources, artifacts, downloads |
-| [tailnet](./plugins/misc/skills/tailnet/) | Move files to tailnet servers, serve files over Tailscale, Taildrop to a phone |
+| [claude-toolkit](./plugins/misc/skills/claude-toolkit/) | Add to this repo, sync it, and set it up on a new machine |
+| [docx](./plugins/misc/skills/docx/) | Create and edit Word documents |
+| [notebooklm](./plugins/misc/skills/notebooklm/) | Drive NotebookLM: notebooks, sources, artifacts, downloads |
+| [tailnet](./plugins/misc/skills/tailnet/) | Move and serve files over Tailscale |
 
-Also ships three hooks that apply everywhere: a `PreToolUse` guard against committing
-`.env` files, a `SessionStart` agent-state tracker, and a `Stop` desktop notification.
+Hooks: block `.env` commits, track agent state, and send a desktop notification when Claude stops.
 
 ### dev-flow
 
-My development workflow chain, split across two sessions with a context clear in between.
-
 | Skill | What it does |
 |---|---|
-| [spec](./plugins/dev-flow/skills/spec/) | Turn an idea into an approved specification |
-| [plan](./plugins/dev-flow/skills/plan/) | Break an approved spec into waves of file-disjoint tasks |
-| [implement](./plugins/dev-flow/skills/implement/) | Execute the plan across persistent subagent slots in git worktrees |
-| [review](./plugins/dev-flow/skills/review/) | Whole-branch review pass with specialist fan-out |
-| [test](./plugins/dev-flow/skills/test/) | Run the plan's verification section, then commit and open the PR |
+| [spec](./plugins/dev-flow/skills/spec/) | Turn an idea into an approved spec |
+| [plan](./plugins/dev-flow/skills/plan/) | Break the spec into tasks |
+| [implement](./plugins/dev-flow/skills/implement/) | Build the plan with subagents in git worktrees |
+| [review](./plugins/dev-flow/skills/review/) | Review the whole branch |
+| [test](./plugins/dev-flow/skills/test/) | Run verification and open the PR |
 
-Includes the `code-reviewer` sub-agent used by the review step, and a `SessionStart`
-resume hook.
+Also includes a `code-reviewer` sub-agent and a hook that resumes a build after a context clear.
 
 ### meta-builders
 
 | Skill | What it does |
 |---|---|
-| [skill-creator](./plugins/meta-builders/skills/skill-creator/) | Create and improve skills, run evals, benchmark performance, grade a `SKILL.md` against a structural rubric |
+| [skill-creator](./plugins/meta-builders/skills/skill-creator/) | Create and improve skills, run evals, benchmark them |
+
+## Mods
+
+[Mods](https://code.claude.com/docs/en/plugins/mods/overview) change Claude Code's own interface. Install `sidebar` along with any of the widgets, since it's what draws them.
+
+![Claude Code with the sidebar docked on the right](./docs/images/sidebar.png)
 
 ### sidebar
 
-A [mod](https://code.claude.com/docs/en/plugins/mods/overview): a docked sidebar for the widget
-mods. Widgets publish their section and handle their own buttons; the sidebar only draws, so a new
-widget needs no change here. The `layout` option picks how: `tabs` (the default) gives each widget
-its own pane, shown as tabs titled with the widget's badge (`Checklist 93%`), opened when the widget
-has something, focused when it asks for attention, and closed when it empties; `stacked` draws every
-section in one pane that opens itself on attention. The `order` option sets the tab order or the
-stacking. `/sidebar` opens it, `/sidebar close` hides it.
+Gives each widget its own tab, opening a tab when the widget has something to show. Set `layout` to `stacked` for one pane instead. `/sidebar` opens it and `/sidebar close` hides it.
 
 ### checklist
 
-A mod: a live checklist of the current plan, drawn as a section in the sidebar.
-Claude posts the steps through its own `checklist` tool and checks each one off as it finishes,
-subagents working a step show under it with their status and tool-call count, and the status
-line carries `done/total`. `/checklist` prints the list, `/checklist clear` empties it.
+Claude posts its plan and checks off steps as it goes, with any subagents shown under their step.
+
+![The checklist tab showing plan progress](./docs/images/checklist.png)
 
 ### questions
 
-A mod: questions Claude asks without stopping the work. Each one comes with the default Claude
-goes with meanwhile and gets an answer field in the sidebar. An answer reaches Claude on its next
-step, with a note to redo anything built on the default. Questions still open at the end of a
-turn get a toast.
+Claude asks without stopping and keeps going on a stated default. Answer in the sidebar whenever you get to it, and Claude redoes anything built on that default.
+
+![The questions tab with two open questions](./docs/images/questions.png)
 
 ### processes
 
-A mod: the background commands and dev servers Claude started this session, shown in the sidebar
-with their ports and uptime and a button that kills one. Nothing is ever killed automatically;
-anything still running when the session ends gets a toast.
+Lists the background commands and dev servers Claude started, with ports, uptime, and a kill button.
+
+![The processes tab showing a running server](./docs/images/processes.png)
 
 ### review-pair
 
-A mod: a second Claude session that reviews every commit the session you are working in makes.
-The first commit in a repo asks once (always, not now, never). On always, a Sonnet reviewer opens
-in a herdr pane beside you (or as a background session outside herdr) and gets each new commit
-range. Blockers go back to the builder, which fixes them, for up to two rounds; nits and clean
-reviews go to a Review tab in the sidebar, and nits are posted as one PR comment when the builder
-opens a PR. The reviewer cannot use the Edit or Write tools and closes when the last builder in
-that repo ends. `/review-pair` shows the status; `on`, `off`, `forget` and `stop` change it.
+Starts a second Claude session that reviews each commit. Blockers go back to the session doing the work to fix; nits and clean reviews land in the sidebar. The reviewer can't use the Edit or Write tools. `/review-pair` shows the status.
+
+![The sidebar showing nits from a review](./docs/images/review-pair.png)
 
 ## Status line
 
-[`statusline/`](./statusline/) holds an agnoster-inspired three-row status line:
-where you are, what you are running, and what you are burning. Point
-`statusLine.command` in `settings.json` at `statusline-command.sh`.
+Three rows: where you are, what you're running, and what you're burning.
 
-## Machine-local configuration
+![The three-row status line](./docs/images/statusline.png)
 
-Nothing machine-specific is committed here. Two files live outside the repo:
+Point `statusLine.command` in `settings.json` at [`statusline-command.sh`](./statusline/statusline-command.sh). Details are in the [status line README](./statusline/README.md).
 
-| File | Used by | Notes |
+## Machine-local config
+
+Nothing machine-specific is committed. Two files live outside the repo:
+
+| File | Used by | What it holds |
 |---|---|---|
-| `~/.claude/tailnet-servers.json` | `tailnet` | Server registry: addresses, SSH aliases, default destinations. See [`servers.example.json`](./plugins/misc/skills/tailnet/servers.example.json) for the schema |
-| `~/.claude/settings.json` | everything | Permissions, env, enabled plugins, status line wiring |
+| `~/.claude/tailnet-servers.json` | `tailnet` | Server registry ([example](./plugins/misc/skills/tailnet/servers.example.json)) |
+| `~/.claude/settings.json` | everything | Permissions, env, enabled plugins, status line |
