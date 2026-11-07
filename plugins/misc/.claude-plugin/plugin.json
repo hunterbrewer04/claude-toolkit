@@ -1,7 +1,7 @@
 {
   "name": "misc",
-  "version": "1.0.0",
-  "description": "Everything cross-cutting: toolkit and documentation authoring, Word documents, NotebookLM, skill authoring, tailnet file movement, and the global hooks.",
+  "version": "1.1.0",
+  "description": "Everything cross-cutting: toolkit management, Word documents, NotebookLM, tailnet file movement, and the global hooks.",
   "author": {
     "name": "Hunter Brewer"
   }
