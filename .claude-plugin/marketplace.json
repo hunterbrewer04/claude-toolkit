@@ -6,12 +6,7 @@
     {
       "name": "school",
       "source": "./plugins/school",
-      "description": "Coursework tooling: course scaffolding, grade math, NotebookLM sync, rubric checks, study guides, AI-detection scans."
-    },
-    {
-      "name": "work",
-      "source": "./plugins/work",
-      "description": "Client and project delivery tooling. Linear issue, project, and cycle management."
+      "description": "Coursework tooling: NotebookLM sync, rubric checks, AI-detection scans."
     },
     {
       "name": "personal",
@@ -21,7 +16,7 @@
     {
       "name": "misc",
       "source": "./plugins/misc",
-      "description": "Cross-cutting tooling: toolkit and doc authoring, Word documents, NotebookLM, skill authoring, tailnet transfers, and the global hooks."
+      "description": "Cross-cutting tooling: toolkit management, Word documents, NotebookLM, tailnet transfers, and the global hooks."
     },
     {
       "name": "dev-flow",
@@ -41,7 +36,7 @@
     {
       "name": "sidebar",
       "source": "./plugins/sidebar",
-      "description": "Mod: one docked pane that stacks a section for each widget mod, in a configurable order."
+      "description": "Mod: a docked sidebar for widget mods, with one tab per widget or one stacked pane, in a configurable order."
     },
     {
       "name": "questions",

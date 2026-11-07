@@ -21,7 +21,7 @@ It never creates a notebook. If a course has no notebook mapped yet, it asks Hun
 ## Prerequisites
 
 - `notebooklm` CLI installed and authenticated. Verify with `notebooklm status`; if that fails, run `notebooklm auth check` then `notebooklm login`. Follow the `notebooklm` skill for anything beyond what's covered here (rate limits, retries, source processing waits).
-- Registry file `~/Desktop/School/school.json`, owned by the `course-setup` skill. Schema:
+- Registry file `~/Desktop/School/school.json`, maintained by hand. Schema:
 
   ```json
   {
@@ -38,7 +38,7 @@ It never creates a notebook. If a course has no notebook mapped yet, it asks Hun
   }
   ```
 
-  This skill reads `path` and reads/writes only the `notebook` field (a NotebookLM notebook UUID, or `null` if unresolved). Leave every other field alone. If the registry or the course entry is missing, run `course-setup` first (or add the entry by hand) rather than inventing a parallel format.
+  This skill reads `path` and reads/writes only the `notebook` field (a NotebookLM notebook UUID, or `null` if unresolved). Leave every other field alone. If the registry or the course entry is missing, add the entry by hand in this format rather than inventing a parallel one.
 - `python3` (stdlib only, no pip install needed) for `scripts/inventory.py`.
 
 ## Process
@@ -49,7 +49,7 @@ Figure out which course Hunter means (from what he says, or the current director
 
 Read `school.json`:
 
-- If the file or the course's entry is missing, offer to run `course-setup` to register it (or add a minimal entry under `courses` with the standard fields and `"notebook": null`).
+- If the file or the course's entry is missing, offer to add a minimal entry under `courses` with the standard fields and `"notebook": null`.
 - If `notebook` is `null`: run `notebooklm list --json`, show Hunter the notebook titles, and ask which one belongs to this course. Write the chosen ID back into `school.json` under that course's `notebook` field.
 - If Hunter says no notebook exists yet for this course: stop. Tell him to create it (web UI, or ask the `notebooklm` skill directly) and come back. This skill never runs `notebooklm create`.
 

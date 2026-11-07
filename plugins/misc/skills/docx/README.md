@@ -135,7 +135,3 @@ This skill requires no additional configuration. Default author for tracked chan
 - `accept_changes.py` requires a working LibreOffice install — it shells out to `soffice`.
 - Table widths must use `WidthType.DXA`; `PERCENTAGE` widths render incorrectly in Google Docs.
 - The skill ships under a proprietary license (see `LICENSE.txt`) — review terms before redistribution.
-
-## Related Components
-
-- [claude-documentation](../claude-documentation/) — Generates READMEs for skills like this one

@@ -1,7 +1,7 @@
 {
   "name": "school",
-  "version": "1.0.0",
-  "description": "Coursework tooling: course scaffolding, grade math, NotebookLM sync, pre-submission rubric checks, study guides, and AI-detection scans.",
+  "version": "1.1.0",
+  "description": "Coursework tooling: NotebookLM sync, pre-submission rubric checks, and AI-detection scans.",
   "author": {
     "name": "Hunter Brewer"
   }

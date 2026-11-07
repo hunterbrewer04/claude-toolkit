@@ -1,29 +1,24 @@
 ---
 name: claude-toolkit
-description: Use when the user asks to "add this to my toolkit", "push to claude-toolkit", "sync my claude-toolkit", "pull my toolkit on this machine", "publish this component", or needs to manage a GitHub repository of Claude Code skills, hooks, and sub-agents. Also applies when the user says "claude-toolkit" by name or wants to organize, update, or set up their toolkit repo.
+description: Use when the user asks to "add this to my toolkit", "push to claude-toolkit", "sync my claude-toolkit", "pull my toolkit on this machine", "publish this component", or needs to manage a GitHub repository of Claude Code skills, hooks, sub-agents, and mods. Also applies when the user says "claude-toolkit" by name or wants to organize, update, or set up their toolkit repo.
 ---
 
 # Claude Toolkit Manager
 
-Manage a GitHub repository of Claude Code components (skills, hooks, sub-agents) — add components, generate documentation, update the index, and keep the repo synced.
-
-## Overview
-
-This skill orchestrates the full lifecycle of adding Claude Code components to an existing GitHub toolkit repository. It handles file organization, documentation generation (via `claude-documentation`), index maintenance, and git operations. The toolkit repo is the single source of truth; local Claude Code directories use symlinks.
+Manage the claude-toolkit repo, a plugin marketplace of Claude Code skills, hooks, sub-agents, and mods. Add components, keep the repo synced, set it up on a new machine, and list what it holds.
 
 ## When to Use
 
-- Adding a new skill, hook, or sub-agent to the toolkit repo
-- Syncing the toolkit repo (pull latest, regenerate index)
-- Setting up the toolkit on a new machine (clone + symlink)
-- Publishing or updating a component after changes
-- Checking what components are in the toolkit
+- Adding a skill, hook, sub-agent, or mod to the toolkit repo
+- Syncing a machine's clone of the repo
+- Setting up the toolkit on a new machine
+- Publishing a change to an existing component
+- Checking what the toolkit holds
 
 ## When NOT to Use
 
 - Creating a new GitHub repository (this skill uses an existing repo)
-- Building the component itself (use `skill-builder`)
-- Writing documentation standalone (use `claude-documentation` directly)
+- Building the component itself (use `skill-creator` for skills, `plugin-authoring` for mods)
 
 ## Core Process
 
@@ -42,117 +37,70 @@ If the user provides a GitHub URL and no local clone exists, clone it first (see
 
 The primary workflow. Trigger: "add this to my toolkit", "push to claude-toolkit", "publish this component."
 
-**Step 1 — Identify the component type and source path.**
+**Step 1. Identify the component type and target plugin.**
 
-Detect type from source files:
+| Type | Detection signal | Goes in |
+|------|-----------------|---------|
+| Skill | Directory contains `SKILL.md` with YAML frontmatter | `plugins/<plugin>/skills/<name>/` |
+| Mod | Directory contains `hooks/hooks.json` listing a `register.tsx` module | `plugins/<name>/`, its own plugin |
+| Hook | Script plus an entry for `settings.json` or `hooks.json` | `plugins/<plugin>/hooks/` |
+| Sub-agent | Agent definition `.md` with frontmatter | `plugins/<plugin>/agents/<name>.md` |
 
-| Type | Detection Signal |
-|------|-----------------|
-| Skill | Directory contains `SKILL.md` with YAML frontmatter (`name`, `description`) |
-| Hook | Directory contains hook scripts, or user points to hook config in `settings.json` |
-| Sub-agent | Directory contains agent definition `.md` with frontmatter (`name`, `subagent_type`) |
+If the type or the plugin is ambiguous, ask the user. See `references/repo-structure.md` for what each plugin holds.
 
-If ambiguous, ask the user to clarify.
+**Step 2. Copy files into the repo, on a new branch.**
 
-**Step 2 — Copy files into the toolkit repo.**
-
-Run the add-component script:
-
-```bash
-bash ~/.claude/skills/claude-toolkit/scripts/add-component.sh <component-type> <source-path> <toolkit-repo-path>
-```
-
-This copies the component directory into the correct subfolder (`skills/`, `hooks/`, or `sub-agents/`) within the toolkit repo. If a component with the same name already exists, prompt the user before overwriting.
-
-**Step 3 — Generate component README.**
-
-Invoke the `claude-documentation` skill to generate a standardized `README.md` for the newly added component. Target the component's directory inside the toolkit repo.
-
-**Step 4 — Regenerate the index README.**
-
-Invoke `claude-documentation` in index mode to regenerate the top-level `README.md` for the toolkit repo. This scans all components and produces a categorized catalog.
-
-**Step 5 — Commit and push.**
+For a skill or a mod, run the script:
 
 ```bash
-cd <toolkit-repo-path>
-git add -A
-git commit -m "Add <type>: <component-name>"
-git push
+bash <repo>/plugins/misc/skills/claude-toolkit/scripts/add-component.sh skill <source-path> <repo> <plugin>
+bash <repo>/plugins/misc/skills/claude-toolkit/scripts/add-component.sh mod <source-path> <repo>
 ```
 
-Confirm with the user before pushing. If the push fails (e.g., upstream changes), pull with rebase first, then retry.
+If it reports `COLLISION:<path>`, ask before overwriting.
+
+For a hook, copy the script into the plugin's `hooks/` folder, make it executable, and add its entry to that plugin's `hooks/hooks.json`, using `${CLAUDE_PLUGIN_ROOT}` for the path. For a sub-agent, copy the `.md` file into the plugin's `agents/` folder.
+
+**Step 3. Register it.**
+
+- Changed an existing plugin: bump `version` in its `.claude-plugin/plugin.json`. Machines that installed from GitHub only pick up a change when the version moves.
+- New plugin or mod: add it to `.claude-plugin/marketplace.json`.
+- Run `claude plugin validate <repo>` and fix anything it reports.
+
+**Step 4. Update the top-level README by hand.**
+
+Add the component to the matching table or section, and update the counts in the intro. Keep it short. The README is not generated.
+
+**Step 5. Commit, push, and open a PR.**
+
+Follow the user's git rules in `~/.claude/CLAUDE.md`. Never merge.
 
 ### Operation B: Sync Toolkit
 
 Trigger: "sync my claude-toolkit", "update my toolkit."
 
-1. `cd <toolkit-repo-path> && git pull --rebase`
-2. Regenerate the top-level index README via `claude-documentation` in index mode
-3. If the index changed, commit and push the update
-4. Report a summary of what changed (new components, updated files)
+1. Check `git status` in the repo. If it has uncommitted changes or is on a branch other than `main`, tell the user and ask before moving it.
+2. `git checkout main && git pull --ff-only`
+3. Report what changed: new, removed, and updated components.
+4. If the machine installed from GitHub rather than a local directory, run `claude plugin update <plugin>@brewkit` for each changed plugin. Tell the user to restart Claude Code.
 
 ### Operation C: Pull/Setup on New Machine
 
 Trigger: "pull my toolkit on this machine", "set up my toolkit."
 
-**Step 1 — Clone the repo.**
+1. Clone the repo to `~/claude-toolkit/` or a user-specified path. Prompt for the GitHub URL if it is not configured.
+2. Add `claude-toolkit-repo: <path>` to `~/.claude/CLAUDE.md` (create if needed).
+3. Add the marketplace: `claude plugin marketplace add <path>`. The marketplace is named `brewkit`.
+4. Ask which plugins this machine needs, then run `claude plugin install <plugin>@brewkit` for each.
+5. Report what was installed and tell the user to restart Claude Code.
 
-Prompt for the GitHub URL if not already configured. Clone to a sensible default location (e.g., `~/claude-toolkit/`) or a user-specified path.
-
-**Step 2 — Persist the repo path.**
-
-Add `claude-toolkit-repo: <path>` to `~/.claude/CLAUDE.md` (create if needed).
-
-**Step 3 — Create symlinks.**
-
-For each component in the toolkit repo, create a symlink in the corresponding local Claude Code directory:
-
-| Component Type | Symlink Target |
-|---------------|----------------|
-| Skills | `~/.claude/skills/<name>` → `<repo>/skills/<name>` |
-| Sub-agents | `~/.claude/agents/<name>` → `<repo>/sub-agents/<name>` |
-| Hooks | Manual — hooks live in `settings.json`, so print instructions for the user to copy hook config entries |
-
-Before creating each symlink:
-- Check if the target already exists
-- If it is already a symlink pointing to the correct location, skip it
-- If it is a symlink pointing elsewhere or a real directory, warn the user and ask before replacing
-
-**Step 4 — Report setup summary.**
-
-List all symlinked components and any manual steps needed (hook configuration).
+A marketplace added from a local path is read straight from the clone's working tree. Whatever branch the clone is on is what new sessions run, so leave it on `main` when not working on the toolkit.
 
 ### Operation D: List Components
 
 Trigger: "what's in my toolkit", "list toolkit components."
 
-Read the toolkit repo directory and display a categorized summary:
-
-```
-Skills (3):
-  - skill-builder
-  - claude-documentation
-  - claude-toolkit
-
-Hooks (1):
-  - pre-commit-lint
-
-Sub-agents (2):
-  - code-reviewer
-  - test-runner
-```
-
-## Handling Hooks
-
-Hooks are special because their runtime configuration lives in `.claude/settings.json`, not in the filesystem hierarchy. When adding a hook:
-
-1. Copy hook script files into `<repo>/hooks/<hook-name>/`
-2. Generate a README via `claude-documentation`
-3. Include a `config-snippet.json` in the hook directory showing the `settings.json` entry the user needs
-4. After pushing, print the config snippet and instruct the user to add it to their local `.claude/settings.json`
-
-On new machine setup, print all hook config snippets that need manual installation.
+Read `.claude-plugin/marketplace.json` and each plugin's `skills/`, `agents/`, and `hooks/` folders, then display a summary grouped by plugin. A plugin whose `hooks/hooks.json` lists a `register.tsx` module is a mod.
 
 ## Error Handling
 
@@ -160,21 +108,12 @@ On new machine setup, print all hook config snippets that need manual installati
 |-----------|--------|
 | Toolkit repo path not configured | Prompt user, offer to persist |
 | Repo path exists but is not a git repo | Error with clear message |
+| Target plugin does not exist | Ask whether to create it or pick another |
 | Component name collision | Prompt before overwriting |
 | Git push fails | Pull with rebase, retry once, then report |
-| Symlink target already exists | Warn and ask before replacing |
 | GitHub URL provided but git not installed | Error with install instructions |
-
-## Quick Reference
-
-| Operation | Trigger | Key Steps |
-|-----------|---------|-----------|
-| Add | "add/push/publish to toolkit" | Copy → Document → Index → Commit → Push |
-| Sync | "sync toolkit" | Pull → Reindex → Commit if changed → Push |
-| Setup | "pull/setup toolkit" | Clone → Persist path → Symlink → Report |
-| List | "list/show toolkit" | Read repo dirs → Display summary |
 
 ## Additional Resources
 
-- **`references/repo-structure.md`** — Expected toolkit repo folder layout, naming conventions, and file placement rules
-- **`scripts/add-component.sh`** — Shell script for copying component files into the correct toolkit subfolder
+- **`references/repo-structure.md`**: repo layout and naming conventions
+- **`scripts/add-component.sh`**: copies a skill or mod into the right folder
